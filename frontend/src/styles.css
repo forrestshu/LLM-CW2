@@ -1,0 +1,380 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ink: oklch(0.18 0.018 225);
+  --muted: oklch(0.46 0.025 225);
+  --surface: oklch(0.985 0.006 215);
+  --surface-2: oklch(0.94 0.011 215);
+  --line: oklch(0.84 0.018 220);
+  --accent: oklch(0.49 0.13 205);
+  --accent-soft: oklch(0.91 0.045 205);
+  --good: oklch(0.53 0.12 155);
+  --warn: oklch(0.62 0.13 65);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.topbar {
+  align-items: end;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 4.1rem);
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin: 0;
+  max-width: 900px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 1rem;
+  margin: 14px 0 0;
+  max-width: 720px;
+}
+
+.status-strip,
+.toggle-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.status,
+.icon-button,
+.primary-button,
+.secondary-button {
+  align-items: center;
+  border-radius: 8px;
+  display: inline-flex;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+.status {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.status.good {
+  color: var(--good);
+}
+
+.status.warn {
+  color: var(--warn);
+}
+
+.icon-button,
+.secondary-button {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.primary-button {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: oklch(0.985 0.006 215);
+  cursor: pointer;
+  font-weight: 800;
+  justify-content: center;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.control-surface {
+  align-items: end;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(220px, 1.4fr) minmax(220px, 1.2fr) minmax(150px, 0.6fr) minmax(190px, 0.8fr) minmax(140px, 0.45fr);
+  padding: 16px;
+}
+
+label,
+.segmented-block {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+label span,
+.segmented-block > span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+input,
+select {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  min-height: 42px;
+  padding: 0 12px;
+  width: 100%;
+}
+
+.segmented {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 42px;
+  overflow: hidden;
+}
+
+.segmented button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.segmented button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.toggle {
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-direction: row;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 10px;
+}
+
+.toggle input {
+  accent-color: var(--accent);
+  min-height: auto;
+  width: auto;
+}
+
+.results-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.strategy-panel,
+.info-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.strategy-panel {
+  min-height: 520px;
+  padding: 18px;
+}
+
+.panel-heading {
+  align-items: center;
+  color: var(--accent);
+  display: flex;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.panel-heading h2 {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 850;
+  margin: 0;
+}
+
+.argument-text {
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.62;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.argument-text.muted,
+.muted-line {
+  color: var(--muted);
+}
+
+.lower-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(280px, 1.2fr) minmax(250px, 0.8fr) minmax(280px, 1fr);
+}
+
+.info-panel {
+  padding: 16px;
+}
+
+.timeline-list,
+.source-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.timeline-item {
+  align-items: center;
+  background: var(--surface-2);
+  border-radius: 8px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  padding: 9px 10px;
+}
+
+.agent-detail {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.agent-detail summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.agent-detail p {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  margin: 10px 0 0;
+  white-space: pre-wrap;
+}
+
+.metric-list {
+  display: grid;
+  gap: 8px 14px;
+  grid-template-columns: 1fr auto;
+  margin: 0 0 14px;
+}
+
+.metric-list dt {
+  color: var(--muted);
+}
+
+.metric-list dd {
+  font-weight: 850;
+  margin: 0;
+}
+
+.source-list a {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  padding: 10px;
+  text-decoration: none;
+}
+
+.source-list strong,
+.source-list span {
+  display: block;
+}
+
+.source-list span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin-top: 5px;
+}
+
+.error-line {
+  background: oklch(0.94 0.045 25);
+  border: 1px solid oklch(0.75 0.12 30);
+  border-radius: 8px;
+  color: oklch(0.36 0.11 32);
+  font-weight: 700;
+  padding: 12px 14px;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1100px) {
+  .control-surface,
+  .lower-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .primary-button {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar,
+  .status-strip {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .control-surface,
+  .results-grid,
+  .lower-grid {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+}
+
