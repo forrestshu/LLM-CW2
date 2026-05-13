@@ -20,7 +20,7 @@ from backend.app.tools.search import SearchError, TavilySearch
 EventCallback = Callable[[str, dict], Awaitable[None]]
 
 
-CACHE_VERSION = "v3-deepseek-token-stream-paragraph"
+CACHE_VERSION = "v4-one-claim-one-evidence"
 ROLE_ORDER = ["pro_logic", "pro_data", "con_logic", "con_data"]
 ROLE_SIDE = {
     "pro_logic": "pro",

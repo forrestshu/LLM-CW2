@@ -40,8 +40,8 @@ def single_prompt(topic: str, target_side: Side, language: Language, sources: li
         system = """/no_think
 你是一位经验丰富的专业辩手。请只输出最终答案，不要输出思考过程。
 
-任务：基于辩题和搜索资料，为用户指定立场生成 3 个有力论点。
-输出必须是一段话，正好 3 句，每句包含论点和论据，每句少于 50 个汉字。
+任务：基于辩题和搜索资料，为用户指定立场生成 1 个有力论点和 1 个论据。
+输出必须是一段话，正好 2 句：第一句是论点，第二句是论据。每句少于 50 个汉字。
 不要使用标题、编号、项目符号、Markdown 列表或“核心主张”等 schema 标签。
 语言：中文。风格：适合课堂演示和实际辩论准备，清晰、克制、有证据意识。"""
         user = f"""辩题：{topic}
@@ -49,13 +49,13 @@ def single_prompt(topic: str, target_side: Side, language: Language, sources: li
 
 {source_block(sources, language)}
 
-请只输出一段话，正好 3 句。每句都要有“观点 + 理由或证据”。"""
+请只输出一段话，正好 2 句：一句论点，一句论据。"""
     else:
         system = """/no_think
 You are an experienced competitive debater. Output only the final answer, with no hidden reasoning.
 
-Task: generate three strong arguments for the requested side using the debate motion and search sources.
-Output one paragraph with exactly 3 sentences. Each sentence must combine one claim with one reason or evidence point.
+Task: generate one strong argument and one evidence point for the requested side using the debate motion and search sources.
+Output one paragraph with exactly 2 sentences: the first sentence is the argument, the second sentence is the evidence.
 Do not use titles, numbering, bullet points, Markdown lists, or schema labels.
 Keep each sentence under 50 words.
 Language: English. Style: concise, classroom-demo ready, evidence-aware."""
@@ -64,7 +64,7 @@ Target side: {ROLE_LABELS[language][target_side]}
 
 {source_block(sources, language)}
 
-Return only one paragraph with exactly 3 sentences."""
+Return only one paragraph with exactly 2 sentences: one argument sentence and one evidence sentence."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -81,8 +81,8 @@ def debater_prompt(role_key: str, topic: str, language: Language, sources: list[
 
 {source_block(sources, language)}
 
-请输出一段短发言，包含 2 个核心立论。
-要求：不要用列表或标题；每个立论都要包含观点和理由；整段少于 90 个汉字；中文输出。"""
+请输出一段短发言，只包含 1 个核心论点和 1 个论据。
+要求：不要用列表或标题；正好 2 句，第一句论点，第二句论据；每句少于 50 个汉字；中文输出。"""
     else:
         specialty = "logic, values, definitions, and causal reasoning" if role_key.endswith("logic") else "data, research evidence, and concrete cases"
         system = f"""/think
@@ -93,8 +93,8 @@ Your side: {ROLE_LABELS[language][side]}
 
 {source_block(sources, language)}
 
-Give a short speech with 2 core constructive arguments.
-Do not use titles or bullet points. Each argument must include a claim and a reason. Keep the whole paragraph under 80 words."""
+Give a short speech with 1 core argument and 1 evidence point.
+Do not use titles or bullet points. Use exactly 2 sentences: first the argument, then the evidence. Keep each sentence under 50 words."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -119,8 +119,8 @@ def rebuttal_prompt(
 对方第一轮立论：
 {opposing_constructives}
 
-请输出一段第二轮反驳短发言：精准反驳对方 1 个薄弱点，并强化己方 1 个核心点。
-不要用列表或标题，整段少于 90 个汉字。"""
+请输出一段第二轮反驳短发言，只包含 1 个反驳论点和 1 个支撑论据。
+不要用列表或标题；正好 2 句，第一句反驳论点，第二句论据；每句少于 50 个汉字。"""
     else:
         system = f"""/think
 You are {role_name}. Output only the presentable final speech, with no hidden reasoning."""
@@ -133,8 +133,8 @@ Your round-one constructive:
 Opposing round-one constructives:
 {opposing_constructives}
 
-Produce one short rebuttal paragraph: attack one weak opposing point and strengthen one core point.
-Do not use titles or bullet points. Keep it under 80 words."""
+Produce one short rebuttal paragraph with 1 rebuttal argument and 1 evidence point.
+Do not use titles or bullet points. Use exactly 2 sentences: first the rebuttal argument, then the evidence. Keep each sentence under 50 words."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -148,8 +148,8 @@ def synthesis_prompt(topic: str, target_side: Side, language: Language, transcri
 完整内部对抗记录：
 {transcript}
 
-请从上述对抗中提炼出目标立场最强的 3 个论点。
-输出必须是一段话，正好 3 句；每句包含论点和论据，并能回应对方攻击；每句少于 50 个汉字。
+请从上述对抗中提炼出目标立场最强的 1 个论点和 1 个论据。
+输出必须是一段话，正好 2 句：第一句是论点，第二句是论据；每句少于 50 个汉字。
 不要使用标题、编号、项目符号、Markdown 列表或 schema 标签。"""
     else:
         system = """/think
@@ -160,7 +160,7 @@ Target side to extract: {ROLE_LABELS[language][target_side]}
 Full internal adversarial transcript:
 {transcript}
 
-Extract the three strongest arguments for the target side.
-Output one paragraph with exactly 3 sentences. Each sentence must combine a claim, evidence or reasoning, and rebuttal awareness.
+Extract the single strongest argument and one evidence point for the target side.
+Output one paragraph with exactly 2 sentences: the first sentence is the argument, the second sentence is the evidence.
 Do not use titles, numbering, bullets, Markdown lists, or schema labels. Keep each sentence under 50 words."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
