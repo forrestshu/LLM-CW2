@@ -65,7 +65,7 @@ const COPY = {
 };
 
 export default function App() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("zh");
   const [topics, setTopics] = useState([]);
   const [topicId, setTopicId] = useState("");
   const [customTopic, setCustomTopic] = useState("");
@@ -123,13 +123,21 @@ export default function App() {
           agent_done: (payload) => finishSegment(payload),
           panel_append: (payload) => appendCachedSegment(payload),
           agent: (payload) => setAgents((items) => [...items, payload]),
-          final: (payload) => setResult(payload),
-          error: (payload) => setError(payload.message || "Generation failed"),
+          final: (payload) => {
+            setResult(payload);
+            setRunning(false);
+          },
+          error: (payload) => {
+            setError(payload.message || "Generation failed");
+            setRunning(false);
+          },
           done: () => setRunning(false),
         },
       );
     } catch (err) {
       setError(err.message);
+      setRunning(false);
+    } finally {
       setRunning(false);
     }
   }

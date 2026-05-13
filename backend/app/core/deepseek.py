@@ -59,6 +59,8 @@ class DeepSeekClient:
             "stream": bool(on_token),
             "thinking": {"type": "enabled" if thinking else "disabled"},
         }
+        if on_token:
+            payload["stream_options"] = {"include_usage": True}
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
@@ -114,4 +116,3 @@ class DeepSeekClient:
                             await on_token(token)
         content = "".join(chunks)
         return content, total_tokens
-
