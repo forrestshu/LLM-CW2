@@ -40,44 +40,31 @@ def single_prompt(topic: str, target_side: Side, language: Language, sources: li
         system = """/no_think
 你是一位经验丰富的专业辩手。请只输出最终答案，不要输出思考过程。
 
-任务：基于辩题和搜索资料，为用户指定立场生成 3 条有力论点。
-每条必须包含：标题、核心主张、逻辑支撑、具体证据、可能反驳应对。
-每条控制在 120 字以内。
+任务：基于辩题和搜索资料，为用户指定立场生成 3 个有力论点。
+输出必须是一段话，正好 3 句，每句包含论点和论据，每句少于 50 个汉字。
+不要使用标题、编号、项目符号、Markdown 列表或“核心主张”等 schema 标签。
 语言：中文。风格：适合课堂演示和实际辩论准备，清晰、克制、有证据意识。"""
         user = f"""辩题：{topic}
 目标立场：{ROLE_LABELS[language][target_side]}
 
 {source_block(sources, language)}
 
-请严格输出 3 条论点，格式如下：
-论点一：[标题]
-- 核心主张：...
-- 逻辑支撑：...
-- 具体证据：...
-- 反驳应对：...
-
-论点二、论点三同上。"""
+请只输出一段话，正好 3 句。每句都要有“观点 + 理由或证据”。"""
     else:
         system = """/no_think
 You are an experienced competitive debater. Output only the final answer, with no hidden reasoning.
 
 Task: generate three strong arguments for the requested side using the debate motion and search sources.
-Each argument must include a title, core claim, reasoning, concrete evidence, and response to likely objections.
-Keep each argument under 90 words.
+Output one paragraph with exactly 3 sentences. Each sentence must combine one claim with one reason or evidence point.
+Do not use titles, numbering, bullet points, Markdown lists, or schema labels.
+Keep each sentence under 50 words.
 Language: English. Style: concise, classroom-demo ready, evidence-aware."""
         user = f"""Motion: {topic}
 Target side: {ROLE_LABELS[language][target_side]}
 
 {source_block(sources, language)}
 
-Return exactly three arguments in this format:
-Argument One: [Title]
-- Core claim: ...
-- Reasoning: ...
-- Concrete evidence: ...
-- Objection response: ...
-
-Repeat for Argument Two and Argument Three."""
+Return only one paragraph with exactly 3 sentences."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -94,12 +81,8 @@ def debater_prompt(role_key: str, topic: str, language: Language, sources: list[
 
 {source_block(sources, language)}
 
-请提出 2 条本方核心立论。要求：
-- 每条论点有清晰标题
-- 逻辑型辩手重视概念和推理，数据型辩手重视证据和案例
-- 主动指出对方最可能攻击的位置
-- 每条控制在 100 字以内
-- 中文输出"""
+请输出一段短发言，包含 2 个核心立论。
+要求：不要用列表或标题；每个立论都要包含观点和理由；整段少于 90 个汉字；中文输出。"""
     else:
         specialty = "logic, values, definitions, and causal reasoning" if role_key.endswith("logic") else "data, research evidence, and concrete cases"
         system = f"""/think
@@ -110,12 +93,8 @@ Your side: {ROLE_LABELS[language][side]}
 
 {source_block(sources, language)}
 
-Give 2 core constructive arguments for your side. Requirements:
-- Use clear argument titles
-- Logic debaters emphasize definitions and reasoning; evidence debaters emphasize data and cases
-- Anticipate where the other side will attack
-- Keep each argument under 75 words
-- Output in English"""
+Give a short speech with 2 core constructive arguments.
+Do not use titles or bullet points. Each argument must include a claim and a reason. Keep the whole paragraph under 80 words."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -140,11 +119,8 @@ def rebuttal_prompt(
 对方第一轮立论：
 {opposing_constructives}
 
-请完成第二轮反驳：
-1. 精准反驳对方最薄弱的 1-2 个论点
-2. 修正并强化你自己的核心论点
-3. 输出可直接用于辩论的简洁发言
-4. 总长度控制在 180 字以内"""
+请输出一段第二轮反驳短发言：精准反驳对方 1 个薄弱点，并强化己方 1 个核心点。
+不要用列表或标题，整段少于 90 个汉字。"""
     else:
         system = f"""/think
 You are {role_name}. Output only the presentable final speech, with no hidden reasoning."""
@@ -157,11 +133,8 @@ Your round-one constructive:
 Opposing round-one constructives:
 {opposing_constructives}
 
-Produce the rebuttal round:
-1. Attack the weakest 1-2 opposing arguments precisely
-2. Repair and strengthen your own position
-3. Write concise debate-ready material
-4. Keep the whole rebuttal under 130 words"""
+Produce one short rebuttal paragraph: attack one weak opposing point and strengthen one core point.
+Do not use titles or bullet points. Keep it under 80 words."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -175,21 +148,9 @@ def synthesis_prompt(topic: str, target_side: Side, language: Language, transcri
 完整内部对抗记录：
 {transcript}
 
-请从上述对抗中提炼出目标立场最强的 3 条论点。
-要求：
-- 每条论点能回应对方主要攻击
-- 综合逻辑论证与事实证据
-- 适合实际辩论使用
-- 每条控制在 130 字以内
-
-格式：
-论点一：[标题]
-- 核心主张：...
-- 逻辑支撑：...
-- 具体证据：...
-- 对方反驳应对：...
-
-论点二、论点三同上。"""
+请从上述对抗中提炼出目标立场最强的 3 个论点。
+输出必须是一段话，正好 3 句；每句包含论点和论据，并能回应对方攻击；每句少于 50 个汉字。
+不要使用标题、编号、项目符号、Markdown 列表或 schema 标签。"""
     else:
         system = """/think
 You are a senior debate judge and argument analyst. Output only the final synthesis, with no hidden reasoning."""
@@ -200,18 +161,6 @@ Full internal adversarial transcript:
 {transcript}
 
 Extract the three strongest arguments for the target side.
-Requirements:
-- Each argument must answer the opponent's main attacks
-- Combine reasoning and evidence
-- Make the output practical for real debate use
-- Keep each argument under 100 words
-
-Format:
-Argument One: [Title]
-- Core claim: ...
-- Reasoning: ...
-- Concrete evidence: ...
-- Objection response: ...
-
-Repeat for Argument Two and Argument Three."""
+Output one paragraph with exactly 3 sentences. Each sentence must combine a claim, evidence or reasoning, and rebuttal awareness.
+Do not use titles, numbering, bullets, Markdown lists, or schema labels. Keep each sentence under 50 words."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]

@@ -9,6 +9,7 @@ from fastapi.responses import StreamingResponse
 
 from backend.app.agents.debate import DebateOrchestrator
 from backend.app.config import ROOT_DIR, get_settings
+from backend.app.core.deepseek import DeepSeekClient
 from backend.app.core.ollama import OllamaClient
 from backend.app.models import GenerationRequest, Language, Topic
 from backend.app.tools.search import TavilySearch
@@ -26,11 +27,18 @@ app.add_middleware(
 
 def get_orchestrator() -> DebateOrchestrator:
     settings = get_settings()
-    llm = OllamaClient(
-        settings.ollama_base_url,
-        settings.ollama_model,
-        enable_thinking=settings.ollama_enable_thinking,
-    )
+    if settings.llm_provider.lower() == "deepseek":
+        llm = DeepSeekClient(
+            settings.deepseek_api_key,
+            settings.deepseek_base_url,
+            settings.deepseek_model,
+        )
+    else:
+        llm = OllamaClient(
+            settings.ollama_base_url,
+            settings.ollama_model,
+            enable_thinking=settings.ollama_enable_thinking,
+        )
     search = TavilySearch(settings.tavily_api_key, settings.cache_dir)
     return DebateOrchestrator(llm, search)
 
@@ -43,11 +51,17 @@ def load_topics() -> list[Topic]:
 @app.get("/api/health")
 async def health():
     settings = get_settings()
-    llm = OllamaClient(settings.ollama_base_url, settings.ollama_model)
+    if settings.llm_provider.lower() == "deepseek":
+        llm = DeepSeekClient(settings.deepseek_api_key, settings.deepseek_base_url, settings.deepseek_model)
+        model = settings.deepseek_model
+    else:
+        llm = OllamaClient(settings.ollama_base_url, settings.ollama_model)
+        model = settings.ollama_model
     search = TavilySearch(settings.tavily_api_key, settings.cache_dir)
     return {
         "app": "ok",
-        "model": settings.ollama_model,
+        "provider": settings.llm_provider,
+        "model": model,
         "thinking_enabled": settings.ollama_enable_thinking,
         "ollama": await llm.health(),
         "tavily_configured": search.configured,

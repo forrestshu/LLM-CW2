@@ -5,13 +5,14 @@ This project implements a domain-specific large-model system for debate preparat
 1. A direct single-agent generation strategy.
 2. A four-agent adversarial debate strategy with pro/con constructive speeches, rebuttals, and final synthesis.
 
-The system uses the open-source local model `qwen3.5:4B` through Ollama and Tavily for web search.
+The default runtime uses the DeepSeek chat completions API for token-by-token streaming. Ollama `qwen3.5:4B` remains available as a local fallback provider, and Tavily powers optional web search.
 
 ## Quick Start
 
 ```bash
 cp .env.example .env
-# edit .env and add TAVILY_API_KEY
+# edit .env and add DEEPSEEK_API_KEY
+# optionally add TAVILY_API_KEY for live web search
 ollama serve
 ollama pull qwen3.5:4B
 
@@ -24,7 +25,7 @@ npm run dev
 
 Open `http://127.0.0.1:5173`.
 
-`OLLAMA_ENABLE_THINKING=false` is the demo-safe default because Qwen thinking can spend a long time in the hidden reasoning channel. Set it to `true` when you want the full `/think` behaviour described in the report.
+Set `LLM_PROVIDER=ollama` if you want to use the local model instead of DeepSeek. `OLLAMA_ENABLE_THINKING=false` is the demo-safe default because Qwen thinking can spend a long time in the hidden reasoning channel.
 
 ## API
 

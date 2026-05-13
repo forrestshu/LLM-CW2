@@ -26,6 +26,7 @@ const COPY = {
     healthNoSearch: "Search key missing",
     single: "Single Agent",
     adversarial: "Adversarial Debate",
+    final: "Final",
     timeline: "Agent Timeline",
     sources: "Sources",
     metrics: "Metrics",
@@ -34,6 +35,7 @@ const COPY = {
     useSearch: "Live search",
     useCache: "Cache",
     empty: "Run a debate to compare both strategies.",
+    streamingHint: "Tokens will appear here as each agent speaks.",
   },
   zh: {
     title: "对抗式辩论论点生成系统",
@@ -49,6 +51,7 @@ const COPY = {
     healthNoSearch: "缺少搜索密钥",
     single: "单 Agent",
     adversarial: "对抗式辩论",
+    final: "最终结果",
     timeline: "Agent 时间线",
     sources: "来源",
     metrics: "指标",
@@ -57,6 +60,7 @@ const COPY = {
     useSearch: "实时搜索",
     useCache: "缓存",
     empty: "运行一次辩论后对比两种策略。",
+    streamingHint: "每个 Agent 发言时，token 会实时出现在这里。",
   },
 };
 
@@ -73,6 +77,8 @@ export default function App() {
   const [running, setRunning] = useState(false);
   const [stages, setStages] = useState([]);
   const [agents, setAgents] = useState([]);
+  const [singleSegments, setSingleSegments] = useState([]);
+  const [adversarialSegments, setAdversarialSegments] = useState([]);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
@@ -97,6 +103,8 @@ export default function App() {
     setRunning(true);
     setStages([]);
     setAgents([]);
+    setSingleSegments([]);
+    setAdversarialSegments([]);
     setResult(null);
     setError("");
     try {
@@ -110,6 +118,10 @@ export default function App() {
         },
         {
           stage: (payload) => setStages((items) => [...items, payload]),
+          agent_start: (payload) => startSegment(payload),
+          token: (payload) => appendToken(payload),
+          agent_done: (payload) => finishSegment(payload),
+          panel_append: (payload) => appendCachedSegment(payload),
           agent: (payload) => setAgents((items) => [...items, payload]),
           final: (payload) => setResult(payload),
           error: (payload) => setError(payload.message || "Generation failed"),
@@ -120,6 +132,74 @@ export default function App() {
       setError(err.message);
       setRunning(false);
     }
+  }
+
+  function updatePanel(panel, updater) {
+    const setter = panel === "single" ? setSingleSegments : setAdversarialSegments;
+    setter((items) => updater(items));
+  }
+
+  function startSegment(payload) {
+    updatePanel(payload.panel, (items) => {
+      const key = segmentKey(payload);
+      if (items.some((item) => item.key === key)) return items;
+      return [
+        ...items,
+        {
+          key,
+          stage: payload.stage,
+          role: payload.role,
+          side: payload.side,
+          content: "",
+          status: "running",
+        },
+      ];
+    });
+  }
+
+  function appendToken(payload) {
+    updatePanel(payload.panel, (items) => {
+      const key = segmentKey(payload);
+      const index = items.findIndex((item) => item.key === key);
+      if (index === -1) {
+        return [
+          ...items,
+          {
+            key,
+            stage: payload.stage,
+            role: payload.role,
+            content: payload.token,
+            status: "running",
+          },
+        ];
+      }
+      return items.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, content: item.content + payload.token } : item,
+      );
+    });
+  }
+
+  function finishSegment(payload) {
+    updatePanel(payload.panel, (items) =>
+      items.map((item) =>
+        item.key === segmentKey(payload)
+          ? { ...item, content: payload.content || item.content, status: "done" }
+          : item,
+      ),
+    );
+  }
+
+  function appendCachedSegment(payload) {
+    updatePanel(payload.panel, (items) => [
+      ...items,
+      {
+        key: `${payload.panel}-${payload.stage}-${payload.role}-${items.length}`,
+        stage: payload.stage,
+        role: payload.role,
+        content: payload.content,
+        status: "done",
+      },
+    ]);
   }
 
   function exportJson() {
@@ -197,8 +277,24 @@ export default function App() {
         {error && <div className="error-line">{error}</div>}
 
         <section className="results-grid">
-          <StrategyPanel title={t.single} icon={<Search size={18} />} content={result?.single_agent?.content} empty={t.empty} />
-          <StrategyPanel title={t.adversarial} icon={<Activity size={18} />} content={result?.adversarial?.content} empty={t.empty} />
+          <StrategyPanel
+            title={t.single}
+            icon={<Search size={18} />}
+            segments={singleSegments}
+            finalContent={result?.single_agent?.content}
+            empty={t.empty}
+            hint={t.streamingHint}
+            finalLabel={t.final}
+          />
+          <StrategyPanel
+            title={t.adversarial}
+            icon={<Activity size={18} />}
+            segments={adversarialSegments}
+            finalContent={result?.adversarial?.content}
+            empty={t.empty}
+            hint={t.streamingHint}
+            finalLabel={t.final}
+          />
         </section>
 
         <section className="lower-grid">
@@ -209,6 +305,10 @@ export default function App() {
       </section>
     </main>
   );
+}
+
+function segmentKey(payload) {
+  return `${payload.panel}-${payload.stage}-${payload.role}`;
 }
 
 function Segmented({ label, value, options, onChange }) {
@@ -235,16 +335,62 @@ function Toggle({ label, checked, onChange }) {
   );
 }
 
-function StrategyPanel({ title, icon, content, empty }) {
+function StrategyPanel({ title, icon, segments, finalContent, empty, hint, finalLabel }) {
+  const hasSegments = segments.length > 0;
+  const finalAlreadyShown = segments.some((segment) => segment.content === finalContent);
   return (
     <article className="strategy-panel">
       <div className="panel-heading">
         {icon}
         <h2>{title}</h2>
       </div>
-      <pre className={content ? "argument-text" : "argument-text muted"}>{content || empty}</pre>
+      {!hasSegments && <p className="muted-line">{empty}</p>}
+      {hasSegments && <p className="streaming-hint">{hint}</p>}
+      <div className="stream-panel">
+        {segments.map((segment) => (
+          <section key={segment.key} className={`stream-segment ${segment.status === "running" ? "running" : ""}`}>
+            <div className="segment-meta">
+              <span>{formatStage(segment.stage)}</span>
+              <strong>{formatRole(segment.role)}</strong>
+            </div>
+            <p>{segment.content || "..."}</p>
+          </section>
+        ))}
+        {finalContent && !finalAlreadyShown && (
+          <section className="stream-segment final">
+            <div className="segment-meta">
+              <span>{finalLabel}</span>
+              <strong>{title}</strong>
+            </div>
+            <p>{finalContent}</p>
+          </section>
+        )}
+      </div>
     </article>
   );
+}
+
+function formatStage(stage) {
+  const map = {
+    single_agent: "Single",
+    round_1: "Round 1",
+    round_2: "Round 2",
+    synthesis: "Synthesis",
+    final: "Final",
+  };
+  return map[stage] || stage;
+}
+
+function formatRole(role) {
+  const map = {
+    single_agent: "Single Agent",
+    pro_logic: "Pro A Logic",
+    pro_data: "Pro B Evidence",
+    con_logic: "Con A Logic",
+    con_data: "Con B Evidence",
+    adversarial_synthesis: "Synthesis",
+  };
+  return map[role] || role;
 }
 
 function Timeline({ title, stages, agents }) {

@@ -39,6 +39,7 @@ class OllamaClient:
         temperature: float = 0.7,
         max_tokens: int = 800,
         thinking: bool = False,
+        on_token=None,
     ) -> LLMResponse:
         started = time.perf_counter()
         payload = {
@@ -58,6 +59,8 @@ class OllamaClient:
                 data = response.json()
         content = data.get("message", {}).get("content", "")
         cleaned = strip_thinking(content)
+        if on_token and cleaned:
+            await on_token(cleaned)
         token_estimate = int(
             (data.get("prompt_eval_count") or 0)
             + (data.get("eval_count") or 0)

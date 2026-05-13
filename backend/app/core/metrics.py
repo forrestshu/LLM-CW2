@@ -26,7 +26,11 @@ def count_arguments(text: str) -> int:
     matches = ARGUMENT_HEADING_RE.findall(text or "")
     if matches:
         return min(3, len(matches))
-    return min(3, len(re.findall(r"(?i)core claim|核心主张", text or "")))
+    schema_count = len(re.findall(r"(?i)core claim|核心主张", text or ""))
+    if schema_count:
+        return min(3, schema_count)
+    sentence_count = len([part for part in re.split(r"[。！？.!?]+", text or "") if part.strip()])
+    return min(3, sentence_count)
 
 
 def char_ngram_diversity(text: str, n: int = 3) -> float:
@@ -51,10 +55,12 @@ def section_diversity(sections: list[str]) -> float:
 def split_argument_sections(text: str) -> list[str]:
     chunks = re.split(r"(?im)^\s*(?:argument|论点)\s*(?:one|two|three|一|二|三|[1-3])[:：.\s-]*", text or "")
     sections = [chunk.strip() for chunk in chunks if chunk.strip()]
-    return sections[:3] if sections else [text or ""]
+    if sections:
+        return sections[:3]
+    sentence_sections = [part.strip() for part in re.split(r"[。！？.!?]+", text or "") if part.strip()]
+    return sentence_sections[:3] if sentence_sections else [text or ""]
 
 
 def _ngram_set(text: str, n: int = 3) -> set[str]:
     compact = re.sub(r"\s+", "", text or "")
     return {compact[i : i + n] for i in range(max(0, len(compact) - n + 1))}
-

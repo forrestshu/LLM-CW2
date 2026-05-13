@@ -246,6 +246,65 @@ select {
   color: var(--muted);
 }
 
+.streaming-hint {
+  color: var(--muted);
+  font-size: 0.86rem;
+  margin: -4px 0 14px;
+}
+
+.stream-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 440px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.stream-segment {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.stream-segment.running {
+  border-color: oklch(0.72 0.08 205);
+}
+
+.stream-segment.final {
+  background: var(--accent-soft);
+}
+
+.segment-meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.segment-meta span {
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.segment-meta strong {
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.stream-segment p {
+  color: var(--ink);
+  font-size: 0.94rem;
+  line-height: 1.56;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
 .lower-grid {
   display: grid;
   gap: 18px;
@@ -377,4 +436,3 @@ select {
     font-size: 2.2rem;
   }
 }
-

@@ -20,6 +20,7 @@ from backend.app.tools.search import SearchError, TavilySearch
 EventCallback = Callable[[str, dict], Awaitable[None]]
 
 
+CACHE_VERSION = "v3-deepseek-token-stream-paragraph"
 ROLE_ORDER = ["pro_logic", "pro_data", "con_logic", "con_data"]
 ROLE_SIDE = {
     "pro_logic": "pro",
@@ -42,6 +43,8 @@ class DebateOrchestrator:
         if cached:
             await emit("stage", {"stage": "cache", "message": "Loaded cached generation result"})
             result = GenerationResult(**cached)
+            await emit("panel_append", {"panel": "single", "role": "single_agent", "stage": "final", "content": result.single_agent.content})
+            await emit("panel_append", {"panel": "adversarial", "role": "adversarial_synthesis", "stage": "final", "content": result.adversarial.content})
             await emit("final", result.model_dump())
             return result
 
@@ -92,11 +95,17 @@ class DebateOrchestrator:
 
     async def _run_single(self, request: GenerationRequest, sources: list[Source], emit: EventCallback) -> AgentOutput:
         await emit("stage", {"stage": "single_agent", "message": "Running direct single-agent strategy"})
+        await emit("agent_start", {"panel": "single", "stage": "single_agent", "role": "single_agent", "side": request.target_side})
+
+        async def on_token(token: str) -> None:
+            await emit("token", {"panel": "single", "stage": "single_agent", "role": "single_agent", "token": token})
+
         response = await self.llm.chat(
             single_prompt(request.topic, request.target_side, request.language, sources),
             temperature=0.55,
             max_tokens=520,
             thinking=False,
+            on_token=on_token,
         )
         output = AgentOutput(
             role="single_agent",
@@ -106,6 +115,7 @@ class DebateOrchestrator:
             duration_sec=response.duration_sec,
             token_estimate=response.token_estimate,
         )
+        await emit("agent_done", {"panel": "single", "stage": "single_agent", **output.model_dump()})
         await emit("agent", output.model_dump())
         return output
 
@@ -135,11 +145,13 @@ class DebateOrchestrator:
         transcript_text = "\n\n".join(
             f"{item.stage} | {item.agent} | {item.side}\n{item.content}" for item in transcript
         )
+        await emit("agent_start", {"panel": "adversarial", "stage": "synthesis", "role": "adversarial_synthesis", "side": "neutral"})
         response = await self.llm.chat(
             synthesis_prompt(request.topic, request.target_side, request.language, transcript_text),
             temperature=0.45,
             max_tokens=600,
             thinking=True,
+            on_token=self._token_emitter(emit, "adversarial", "synthesis", "adversarial_synthesis"),
         )
         output = AgentOutput(
             role="adversarial_synthesis",
@@ -158,6 +170,7 @@ class DebateOrchestrator:
                 duration_sec=response.duration_sec,
             )
         )
+        await emit("agent_done", {"panel": "adversarial", "stage": "synthesis", **output.model_dump()})
         await emit("agent", output.model_dump())
         return output, transcript, round(time.perf_counter() - started, 3)
 
@@ -169,11 +182,13 @@ class DebateOrchestrator:
         emit: EventCallback,
         stage: str,
     ) -> AgentOutput:
+        await emit("agent_start", {"panel": "adversarial", "stage": stage, "role": role, "side": ROLE_SIDE[role]})
         response = await self.llm.chat(
             debater_prompt(role, request.topic, request.language, sources),
             temperature=0.7,
             max_tokens=360,
             thinking=True,
+            on_token=self._token_emitter(emit, "adversarial", stage, role),
         )
         output = AgentOutput(
             role=role,
@@ -183,6 +198,7 @@ class DebateOrchestrator:
             duration_sec=response.duration_sec,
             token_estimate=response.token_estimate,
         )
+        await emit("agent_done", {"panel": "adversarial", "stage": stage, **output.model_dump()})
         await emit("agent", {"stage": stage, **output.model_dump()})
         return output
 
@@ -197,11 +213,13 @@ class DebateOrchestrator:
         opposing = "\n\n".join(
             constructive_by_role[other].content for other in ROLE_ORDER if ROLE_SIDE[other] != ROLE_SIDE[role]
         )
+        await emit("agent_start", {"panel": "adversarial", "stage": "round_2", "role": role, "side": ROLE_SIDE[role]})
         response = await self.llm.chat(
             rebuttal_prompt(role, request.topic, request.language, own, opposing),
             temperature=0.65,
             max_tokens=360,
             thinking=True,
+            on_token=self._token_emitter(emit, "adversarial", "round_2", role),
         )
         output = AgentOutput(
             role=role,
@@ -211,8 +229,16 @@ class DebateOrchestrator:
             duration_sec=response.duration_sec,
             token_estimate=response.token_estimate,
         )
+        await emit("agent_done", {"panel": "adversarial", "stage": "round_2", **output.model_dump()})
         await emit("agent", {"stage": "round_2", **output.model_dump()})
         return output
+
+    @staticmethod
+    def _token_emitter(emit: EventCallback, panel: str, stage: str, role: str):
+        async def on_token(token: str) -> None:
+            await emit("token", {"panel": panel, "stage": stage, "role": role, "token": token})
+
+        return on_token
 
     def _read_generation_cache(self, request: GenerationRequest) -> dict | None:
         cache = self._load_generation_cache()
@@ -234,7 +260,7 @@ class DebateOrchestrator:
 
     @staticmethod
     def _cache_key(request: GenerationRequest) -> str:
-        payload = request.model_dump(exclude={"use_cache"})
+        payload = {"version": CACHE_VERSION, **request.model_dump(exclude={"use_cache"})}
         raw = json.dumps(payload, ensure_ascii=False, sort_keys=True)
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:32]
 
