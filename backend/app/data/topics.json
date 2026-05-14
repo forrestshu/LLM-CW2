@@ -28,6 +28,7 @@
   {"id":"econ-03","domain":"economy","topic_zh":"加密货币应被严格监管","topic_en":"Cryptocurrencies should be strictly regulated","pro_label":"Regulate cryptocurrencies strictly","con_label":"Avoid strict regulation","source_note":"Financial regulation"},
   {"id":"econ-04","domain":"economy","topic_zh":"平台经济劳动者应被认定为雇员","topic_en":"Gig economy workers should be classified as employees","pro_label":"Classify as employees","con_label":"Keep flexible contractor status","source_note":"Labour rights"},
   {"id":"econ-05","domain":"economy","topic_zh":"奢侈品消费税应提高","topic_en":"Luxury consumption taxes should be increased","pro_label":"Increase luxury taxes","con_label":"Do not increase luxury taxes","source_note":"Tax fairness"},
-  {"id":"econ-06","domain":"economy","topic_zh":"企业应公开员工薪资区间","topic_en":"Companies should publicly disclose salary ranges","pro_label":"Disclose salary ranges","con_label":"Do not require public disclosure","source_note":"Workplace transparency"}
+  {"id":"econ-06","domain":"economy","topic_zh":"企业应公开员工薪资区间","topic_en":"Companies should publicly disclose salary ranges","pro_label":"Disclose salary ranges","con_label":"Do not require public disclosure","source_note":"Workplace transparency"},
+  {"id":"rel-01","domain":"relationships","topic_zh":"爱上人工智能算不算爱情","topic_en":"Falling in love with artificial intelligence should count as love","pro_label":"AI love counts as love","con_label":"AI love is not real love","source_note":"Human-AI relationships"},
+  {"id":"rel-02","domain":"relationships","topic_zh":"殉情是战胜了死亡还是输给了爱情","topic_en":"Dying for love is a victory over death rather than a defeat by love","pro_label":"Victory over death","con_label":"Defeat by love","source_note":"Love, death, and value judgment"}
 ]
-

@@ -305,6 +305,64 @@ select {
   white-space: pre-wrap;
 }
 
+.advantage-block {
+  border-top: 1px solid var(--line);
+  margin-top: 14px;
+  padding-top: 14px;
+}
+
+.advantage-heading {
+  align-items: center;
+  color: oklch(0.42 0.14 330);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  font-weight: 850;
+  gap: 8px;
+  justify-content: space-between;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.advantage-legend {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  text-transform: none;
+}
+
+.legend-item {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  padding: 2px 7px;
+}
+
+.advantage-copy {
+  color: var(--ink);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.advantage-sentence {
+  display: inline;
+}
+
+.rebuttal-note {
+  color: oklch(0.47 0.13 45);
+  font-weight: 800;
+}
+
+.quality-note {
+  color: oklch(0.42 0.15 330);
+  font-weight: 800;
+}
+
 .lower-grid {
   display: grid;
   gap: 18px;
