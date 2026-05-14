@@ -60,6 +60,16 @@ class Metrics(BaseModel):
     adversarial_diversity: float
 
 
+class AdvantageAnnotation(BaseModel):
+    sentence: str
+    rebuttal_note: str = ""
+    advantage_note: str = ""
+
+
+class AdvantageAnalysis(BaseModel):
+    annotations: list[AdvantageAnnotation] = Field(default_factory=list)
+
+
 class GenerationResult(BaseModel):
     topic: str
     target_side: Side
@@ -69,9 +79,9 @@ class GenerationResult(BaseModel):
     transcript: list[TranscriptItem]
     sources: list[Source]
     metrics: Metrics
+    advantage_analysis: AdvantageAnalysis = Field(default_factory=AdvantageAnalysis)
 
 
 class StreamEvent(BaseModel):
     event: str
     payload: dict[str, Any]
-

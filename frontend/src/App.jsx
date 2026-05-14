@@ -30,6 +30,9 @@ const COPY = {
     timeline: "Agent Timeline",
     sources: "Sources",
     metrics: "Metrics",
+    advantage: "Why Multi-Agent Is Better",
+    rebuttalNote: "rebuttal source",
+    qualityNote: "quality gain",
     export: "Export JSON",
     useCustom: "Use custom",
     useSearch: "Live search",
@@ -55,6 +58,9 @@ const COPY = {
     timeline: "Agent 时间线",
     sources: "来源",
     metrics: "指标",
+    advantage: "多 Agent 优势标注",
+    rebuttalNote: "反驳来源",
+    qualityNote: "相比单 Agent 的优势",
     export: "导出 JSON",
     useCustom: "使用自定义",
     useSearch: "实时搜索",
@@ -293,6 +299,9 @@ export default function App() {
             empty={t.empty}
             hint={t.streamingHint}
             finalLabel={t.final}
+            advantageLabel={t.advantage}
+            rebuttalNoteLabel={t.rebuttalNote}
+            qualityNoteLabel={t.qualityNote}
           />
           <StrategyPanel
             title={t.adversarial}
@@ -302,6 +311,10 @@ export default function App() {
             empty={t.empty}
             hint={t.streamingHint}
             finalLabel={t.final}
+            advantageLabel={t.advantage}
+            advantageAnalysis={result?.advantage_analysis}
+            rebuttalNoteLabel={t.rebuttalNote}
+            qualityNoteLabel={t.qualityNote}
           />
         </section>
 
@@ -343,9 +356,22 @@ function Toggle({ label, checked, onChange }) {
   );
 }
 
-function StrategyPanel({ title, icon, segments, finalContent, empty, hint, finalLabel }) {
+function StrategyPanel({
+  title,
+  icon,
+  segments,
+  finalContent,
+  empty,
+  hint,
+  finalLabel,
+  advantageLabel,
+  advantageAnalysis,
+  rebuttalNoteLabel,
+  qualityNoteLabel,
+}) {
   const hasSegments = segments.length > 0;
   const finalAlreadyShown = segments.some((segment) => segment.content === finalContent);
+  const annotations = advantageAnalysis?.annotations || [];
   return (
     <article className="strategy-panel">
       <div className="panel-heading">
@@ -374,7 +400,39 @@ function StrategyPanel({ title, icon, segments, finalContent, empty, hint, final
           </section>
         )}
       </div>
+      {annotations.length > 0 && (
+        <AdvantageBlock
+          title={advantageLabel}
+          annotations={annotations}
+          rebuttalNoteLabel={rebuttalNoteLabel}
+          qualityNoteLabel={qualityNoteLabel}
+        />
+      )}
     </article>
+  );
+}
+
+function AdvantageBlock({ title, annotations, rebuttalNoteLabel, qualityNoteLabel }) {
+  return (
+    <section className="advantage-block">
+      <div className="advantage-heading">
+        <span>{title}</span>
+        <span className="advantage-legend">
+          <span className="legend-item rebuttal-note">{rebuttalNoteLabel}</span>
+          <span className="legend-item quality-note">{qualityNoteLabel}</span>
+        </span>
+      </div>
+      <p className="advantage-copy">
+        {annotations.map((item, index) => (
+          <span key={`${item.sentence}-${index}`} className="advantage-sentence">
+            {item.sentence}
+            {item.rebuttal_note && <span className="rebuttal-note">（{item.rebuttal_note}）</span>}
+            {item.advantage_note && <span className="quality-note">（{item.advantage_note}）</span>}
+            {index < annotations.length - 1 ? " " : ""}
+          </span>
+        ))}
+      </p>
+    </section>
   );
 }
 
