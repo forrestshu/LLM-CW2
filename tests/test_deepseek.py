@@ -32,7 +32,7 @@ class FakeStreamResponse:
 async def test_deepseek_stream_collects_tokens(monkeypatch):
     class FakeAsyncClient:
         def __init__(self, *args, **kwargs):
-            pass
+            assert kwargs["trust_env"] is False
 
         async def __aenter__(self):
             return self
@@ -55,4 +55,3 @@ async def test_deepseek_stream_collects_tokens(monkeypatch):
     assert response.content == "Hello world"
     assert tokens == ["Hello", " world"]
     assert response.token_estimate == 12
-

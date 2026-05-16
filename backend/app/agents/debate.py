@@ -265,7 +265,7 @@ class DebateOrchestrator:
             synthesis_prompt(request.topic, request.target_side, request.language, transcript_text),
             temperature=0.45,
             max_tokens=900,
-            thinking=True,
+            thinking=False,
             on_token=self._token_emitter(emit, "adversarial", "synthesis", "adversarial_synthesis"),
         )
         output = AgentOutput(
@@ -302,7 +302,7 @@ class DebateOrchestrator:
             debater_prompt(role, request.topic, request.language, sources),
             temperature=0.7,
             max_tokens=360,
-            thinking=True,
+            thinking=False,
             on_token=self._token_emitter(emit, "adversarial", stage, role),
         )
         output = AgentOutput(
@@ -333,7 +333,7 @@ class DebateOrchestrator:
             rebuttal_prompt(role, request.topic, request.language, own, opposing),
             temperature=0.65,
             max_tokens=360,
-            thinking=True,
+            thinking=False,
             on_token=self._token_emitter(emit, "adversarial", "round_2", role),
         )
         output = AgentOutput(

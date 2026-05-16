@@ -74,7 +74,7 @@ def debater_prompt(role_key: str, topic: str, language: Language, sources: list[
     role_name = ROLE_LABELS[language][role_key]
     if language == "zh":
         specialty = "逻辑推理、价值判断、概念界定" if role_key.endswith("logic") else "真实数据、研究报告、案例证据"
-        system = f"""/think
+        system = f"""/no_think
 你是{role_name}。请只输出可展示的最终发言，不要输出思考过程。
 你的专长是：{specialty}。"""
         user = f"""辩题：{topic}
@@ -86,7 +86,7 @@ def debater_prompt(role_key: str, topic: str, language: Language, sources: list[
 要求：不要用列表或标题；正好 2 句，第一句论点，第二句论据；每句少于 50 个汉字；中文输出。"""
     else:
         specialty = "logic, values, definitions, and causal reasoning" if role_key.endswith("logic") else "data, research evidence, and concrete cases"
-        system = f"""/think
+        system = f"""/no_think
 You are {role_name}. Output only the presentable final speech, with no hidden reasoning.
 Your specialty is {specialty}."""
         user = f"""Motion: {topic}
@@ -109,7 +109,7 @@ def rebuttal_prompt(
     side = "pro" if role_key.startswith("pro") else "con"
     role_name = ROLE_LABELS[language][role_key]
     if language == "zh":
-        system = f"""/think
+        system = f"""/no_think
 你是{role_name}。请只输出可展示的最终发言，不要输出思考过程。"""
         user = f"""辩题：{topic}
 你的立场：{ROLE_LABELS[language][side]}
@@ -123,7 +123,7 @@ def rebuttal_prompt(
 请输出一段第二轮反驳短发言，只包含 1 个反驳论点和 1 个支撑论据。
 不要用列表或标题；正好 2 句，第一句反驳论点，第二句论据；每句少于 50 个汉字。"""
     else:
-        system = f"""/think
+        system = f"""/no_think
 You are {role_name}. Output only the presentable final speech, with no hidden reasoning."""
         user = f"""Motion: {topic}
 Your side: {ROLE_LABELS[language][side]}
@@ -141,7 +141,7 @@ Do not use titles or bullet points. Use exactly 2 sentences: first the rebuttal 
 
 def synthesis_prompt(topic: str, target_side: Side, language: Language, transcript: str) -> list[dict[str, str]]:
     if language == "zh":
-        system = """/think
+        system = """/no_think
 你是一位资深辩论裁判、论点分析师和决赛陈词教练。请只输出面向观众的最终答案，不要输出思考过程。"""
         user = f"""辩题：{topic}
 需要提炼的立场：{ROLE_LABELS[language][target_side]}
@@ -155,7 +155,7 @@ def synthesis_prompt(topic: str, target_side: Side, language: Language, transcri
 不要提及“内部对抗”“辩论记录”“第几轮”“Agent”“裁判”“对方刚才说”等过程信息。
 不要使用标题、编号、项目符号、Markdown 列表或 schema 标签。"""
     else:
-        system = """/think
+        system = """/no_think
 You are a senior debate judge, argument analyst, and final-speech coach. Output only the audience-facing final answer, with no hidden reasoning."""
         user = f"""Motion: {topic}
 Target side to extract: {ROLE_LABELS[language][target_side]}

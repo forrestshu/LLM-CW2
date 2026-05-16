@@ -31,6 +31,9 @@ class DeepSeekClient:
         self.model = model
         self.timeout = timeout
 
+    def _http_client(self) -> httpx.AsyncClient:
+        return httpx.AsyncClient(timeout=self.timeout, trust_env=False)
+
     async def health(self) -> dict[str, object]:
         return {
             "available": bool(self.api_key),
@@ -79,10 +82,13 @@ class DeepSeekClient:
         )
 
     async def _complete(self, payload: dict, headers: dict[str, str]) -> tuple[str, int]:
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
-            response = await client.post(f"{self.base_url}/chat/completions", json=payload, headers=headers)
-            response.raise_for_status()
-            data = response.json()
+        try:
+            async with self._http_client() as client:
+                response = await client.post(f"{self.base_url}/chat/completions", json=payload, headers=headers)
+                response.raise_for_status()
+                data = response.json()
+        except httpx.ConnectError as exc:
+            raise RuntimeError("DeepSeek connection failed while bypassing local proxy. Check network access to api.deepseek.com.") from exc
         content = data["choices"][0]["message"].get("content") or ""
         usage = data.get("usage") or {}
         return content, int(usage.get("total_tokens") or 0)
@@ -95,24 +101,27 @@ class DeepSeekClient:
     ) -> tuple[str, int]:
         chunks: list[str] = []
         total_tokens = 0
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
-            async with client.stream("POST", f"{self.base_url}/chat/completions", json=payload, headers=headers) as response:
-                response.raise_for_status()
-                async for line in response.aiter_lines():
-                    if not line.startswith("data:"):
-                        continue
-                    data = line.removeprefix("data:").strip()
-                    if data == "[DONE]":
-                        break
-                    event = json.loads(data)
-                    usage = event.get("usage")
-                    if usage:
-                        total_tokens = int(usage.get("total_tokens") or total_tokens)
-                    for choice in event.get("choices", []):
-                        delta = choice.get("delta") or {}
-                        token = delta.get("content") or ""
-                        if token:
-                            chunks.append(token)
-                            await on_token(token)
+        try:
+            async with self._http_client() as client:
+                async with client.stream("POST", f"{self.base_url}/chat/completions", json=payload, headers=headers) as response:
+                    response.raise_for_status()
+                    async for line in response.aiter_lines():
+                        if not line.startswith("data:"):
+                            continue
+                        data = line.removeprefix("data:").strip()
+                        if data == "[DONE]":
+                            break
+                        event = json.loads(data)
+                        usage = event.get("usage")
+                        if usage:
+                            total_tokens = int(usage.get("total_tokens") or total_tokens)
+                        for choice in event.get("choices", []):
+                            delta = choice.get("delta") or {}
+                            token = delta.get("content") or ""
+                            if token:
+                                chunks.append(token)
+                                await on_token(token)
+        except httpx.ConnectError as exc:
+            raise RuntimeError("DeepSeek connection failed while bypassing local proxy. Check network access to api.deepseek.com.") from exc
         content = "".join(chunks)
         return content, total_tokens

@@ -13,8 +13,8 @@ import { fetchHealth, fetchTopics, streamGeneration } from "./api.js";
 
 const COPY = {
   en: {
-    title: "Adversarial Debate Argument Generator",
-    subtitle: "Single-pass generation compared with an internal four-agent debate.",
+    title: "Multi-Agent Argument Generator",
+    subtitle: "Single-pass generation compared with an internal four-agent workflow.",
     topic: "Motion",
     custom: "Custom motion",
     side: "Target side",
@@ -25,7 +25,7 @@ const COPY = {
     healthReady: "Ready",
     healthNoSearch: "Search key missing",
     single: "Single Agent",
-    adversarial: "Adversarial Debate",
+    adversarial: "Multi-Agent",
     final: "Final",
     timeline: "Agent Timeline",
     sources: "Sources",
@@ -37,12 +37,12 @@ const COPY = {
     useCustom: "Use custom",
     useSearch: "Live search",
     useCache: "Cache",
-    empty: "Run a debate to compare both strategies.",
+    empty: "Run once to compare both strategies.",
     streamingHint: "Tokens will appear here as each agent speaks.",
   },
   zh: {
-    title: "对抗式辩论论点生成系统",
-    subtitle: "单次生成与四 Agent 内部对抗的并排比较。",
+    title: "多 Agent 论点生成系统",
+    subtitle: "单次生成与四 Agent 协作流程的并排比较。",
     topic: "辩题",
     custom: "自定义辩题",
     side: "目标立场",
@@ -53,7 +53,7 @@ const COPY = {
     healthReady: "就绪",
     healthNoSearch: "缺少搜索密钥",
     single: "单 Agent",
-    adversarial: "对抗式辩论",
+    adversarial: "多 Agent",
     final: "最终结果",
     timeline: "Agent 时间线",
     sources: "来源",
@@ -65,7 +65,7 @@ const COPY = {
     useCustom: "使用自定义",
     useSearch: "实时搜索",
     useCache: "缓存",
-    empty: "运行一次辩论后对比两种策略。",
+    empty: "运行一次后对比两种策略。",
     streamingHint: "每个 Agent 发言时，token 会实时出现在这里。",
   },
 };
@@ -495,11 +495,11 @@ function MetricsPanel({ title, result, onExport, exportLabel }) {
       <dl className="metric-list">
         <Metric label="Total sec" value={metrics?.total_duration_sec} />
         <Metric label="Single sec" value={metrics?.single_duration_sec} />
-        <Metric label="Adv sec" value={metrics?.adversarial_duration_sec} />
+        <Metric label="Multi sec" value={metrics?.adversarial_duration_sec} />
         <Metric label="Tokens" value={metrics?.token_estimate} />
         <Metric label="Sources" value={metrics?.source_count} />
         <Metric label="Single diversity" value={metrics?.single_diversity} />
-        <Metric label="Adv diversity" value={metrics?.adversarial_diversity} />
+        <Metric label="Multi diversity" value={metrics?.adversarial_diversity} />
       </dl>
       <button className="secondary-button" disabled={!result} onClick={onExport}>
         <Download size={16} />
