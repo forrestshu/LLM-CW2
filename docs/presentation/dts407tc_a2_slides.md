@@ -8,12 +8,12 @@ date: "May 2026"
 
 - Debate preparation needs arguments that survive counterarguments.
 - Single-pass LLM generation is fluent but often shallow.
-- Goal: generate three stronger arguments for a chosen side.
+- Goal: generate one structured reason and one stronger dialectical logic chain for a chosen side.
 
 # System
 
 - Local open-source model: Ollama `qwen3.5:4B`.
-- Search: Tavily API with local caching.
+- Thinking mode: disabled for all generation agents.
 - Backend: FastAPI.
 - Frontend: React bilingual interface.
 
@@ -21,36 +21,36 @@ date: "May 2026"
 
 | Strategy | Process | Expected Strength |
 | --- | --- | --- |
-| Single Agent | Search then generate | Fast baseline |
-| 4 Agent Debate | Constructives, rebuttals, synthesis | More robust arguments |
+| Single Agent | Direct structured logic generation | Fast baseline |
+| Multi-Agent | Generate, challenge, optimize, score | More robust reasoning |
 
-# Adversarial Flow
+# Multi-Agent Flow
 
-1. Pro Logic and Pro Evidence build support.
-2. Con Logic and Con Evidence attack the motion.
-3. Both sides rebut.
-4. Neutral synthesis extracts the target side's best three arguments.
+1. One generator creates six candidate reasons for the chosen side.
+2. Five opposition agents each vote for the weakest logic chain and challenge it.
+3. A unique highest-vote candidate is eliminated; top-vote ties eliminate nothing.
+4. Challenged survivors are optimized, then five scoring agents rate the remaining candidates.
 
 # Evaluation
 
-- Automatic metrics: response time, token estimate, source count, argument count, diversity.
-- Human evaluation: persuasiveness, relevance, evidence quality, rebuttal awareness.
-- Expected result: adversarial strategy is slower but stronger.
+- Automatic metrics: response time, token estimate, candidate count, eliminated count, optimized count, scoring-agent count, final average score.
+- Human evaluation: persuasiveness, relevance, dialectical completeness, rebuttal awareness.
+- Expected result: multi-agent strategy is slower but stronger.
 
 # Live Demo
 
 - English: `AI systems should have legal personhood`.
 - Chinese UI demo: the same topic selector can switch to Chinese motions.
-- Show both outputs, sources, metrics, and transcript.
+- Show both structured outputs, workflow metrics, and transcript.
 
 # Ethics
 
-- Risks: one-sided persuasion, biased sources, misinformation, privacy of search queries.
-- Mitigations: show sources, keep internal opposing arguments, support human review, local model.
+- Risks: one-sided persuasion, model bias, overconfident reasoning.
+- Mitigations: show internal opposition challenges, support human review, local generation.
 
 # Q&A
 
 - Why not fine-tune?
 - How is the comparison fair?
 - When is the single-agent strategy better?
-- What are the limits of search-based evidence?
+- What are the limits of internal model reasoning?

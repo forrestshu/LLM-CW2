@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 Language = Literal["en", "zh"]
@@ -18,24 +18,28 @@ class Topic(BaseModel):
 
 
 class GenerationRequest(BaseModel):
-    topic: str = Field(min_length=2)
+    model_config = ConfigDict(extra="ignore")
+
+    topic: str = Field(min_length=1)
     target_side: Side = "pro"
     language: Language = "en"
-    use_search: bool = True
     use_cache: bool = True
+    side_claim: str | None = Field(
+        default=None,
+        description="Explicit claim for target_side on this motion (e.g. topic pro_label/con_label).",
+    )
 
 
-class Source(BaseModel):
-    title: str
-    url: str
-    snippet: str = ""
+class DebateArgument(BaseModel):
+    reason: str = ""
+    logic_chain: str = ""
 
 
 class AgentOutput(BaseModel):
     role: str
     side: Side | Literal["neutral"]
     content: str
-    sources: list[Source] = Field(default_factory=list)
+    argument: DebateArgument = Field(default_factory=DebateArgument)
     duration_sec: float = 0.0
     token_estimate: int = 0
 
@@ -46,6 +50,7 @@ class TranscriptItem(BaseModel):
     side: Side | Literal["neutral"]
     content: str
     duration_sec: float
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class Metrics(BaseModel):
@@ -53,21 +58,14 @@ class Metrics(BaseModel):
     single_duration_sec: float
     adversarial_duration_sec: float
     token_estimate: int
-    source_count: int
-    single_argument_count: int
-    adversarial_argument_count: int
-    single_diversity: float
-    adversarial_diversity: float
-
-
-class AdvantageAnnotation(BaseModel):
-    sentence: str
-    rebuttal_note: str = ""
-    advantage_note: str = ""
-
-
-class AdvantageAnalysis(BaseModel):
-    annotations: list[AdvantageAnnotation] = Field(default_factory=list)
+    single_argument_count: int = 1
+    adversarial_argument_count: int = 1
+    candidate_count: int = 0
+    eliminated_count: int = 0
+    optimized_count: int = 0
+    scoring_agent_count: int = 0
+    final_average_score: float = 0.0
+    latency_cost_ratio: float = 0.0
 
 
 class GenerationResult(BaseModel):
@@ -77,9 +75,7 @@ class GenerationResult(BaseModel):
     single_agent: AgentOutput
     adversarial: AgentOutput
     transcript: list[TranscriptItem]
-    sources: list[Source]
     metrics: Metrics
-    advantage_analysis: AdvantageAnalysis = Field(default_factory=AdvantageAnalysis)
 
 
 class StreamEvent(BaseModel):

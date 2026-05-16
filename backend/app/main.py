@@ -9,10 +9,8 @@ from fastapi.responses import StreamingResponse
 
 from backend.app.agents.debate import DebateOrchestrator
 from backend.app.config import ROOT_DIR, get_settings
-from backend.app.core.deepseek import DeepSeekClient
 from backend.app.core.ollama import OllamaClient
 from backend.app.models import GenerationRequest, Language, Topic
-from backend.app.tools.search import TavilySearch
 
 
 app = FastAPI(title="DTS407TC A2 Debate Argument Generator", version="0.1.0")
@@ -27,20 +25,12 @@ app.add_middleware(
 
 def get_orchestrator() -> DebateOrchestrator:
     settings = get_settings()
-    if settings.llm_provider.lower() == "deepseek":
-        llm = DeepSeekClient(
-            settings.deepseek_api_key,
-            settings.deepseek_base_url,
-            settings.deepseek_model,
-        )
-    else:
-        llm = OllamaClient(
-            settings.ollama_base_url,
-            settings.ollama_model,
-            enable_thinking=settings.ollama_enable_thinking,
-        )
-    search = TavilySearch(settings.tavily_api_key, settings.cache_dir)
-    return DebateOrchestrator(llm, search)
+    llm = OllamaClient(
+        settings.ollama_base_url,
+        settings.ollama_model,
+        enable_thinking=False,
+    )
+    return DebateOrchestrator(llm, settings.cache_dir)
 
 
 def load_topics() -> list[Topic]:
@@ -51,21 +41,14 @@ def load_topics() -> list[Topic]:
 @app.get("/api/health")
 async def health():
     settings = get_settings()
-    if settings.llm_provider.lower() == "deepseek":
-        llm = DeepSeekClient(settings.deepseek_api_key, settings.deepseek_base_url, settings.deepseek_model)
-        model = settings.deepseek_model
-    else:
-        llm = OllamaClient(settings.ollama_base_url, settings.ollama_model)
-        model = settings.ollama_model
-    search = TavilySearch(settings.tavily_api_key, settings.cache_dir)
+    llm = OllamaClient(settings.ollama_base_url, settings.ollama_model, enable_thinking=False)
     return {
         "app": "ok",
-        "provider": settings.llm_provider,
-        "model": model,
-        "thinking_enabled": settings.ollama_enable_thinking,
+        "provider": "ollama",
+        "model": settings.ollama_model,
+        "thinking_enabled": False,
         "ollama": await llm.health(),
-        "tavily_configured": search.configured,
-        "cache": search.cache_status(),
+        "cache": _generation_cache_status(settings.cache_dir),
     }
 
 
@@ -116,3 +99,14 @@ async def generate_stream(request: GenerationRequest):
 @app.get("/")
 async def root():
     return {"message": "Debate Argument Generator API", "docs": f"{ROOT_DIR}/README.md"}
+
+
+def _generation_cache_status(cache_dir: Path) -> dict[str, object]:
+    path = cache_dir / "generation_cache.json"
+    if not path.exists():
+        return {"path": str(path), "entries": 0}
+    try:
+        entries = len(json.loads(path.read_text(encoding="utf-8")))
+    except json.JSONDecodeError:
+        entries = 0
+    return {"path": str(path), "entries": entries}

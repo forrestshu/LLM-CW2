@@ -15,31 +15,29 @@
 \maketitle
 
 \section{Motivation}
-Debate preparation requires more than producing plausible arguments. A useful tool must expose likely counterarguments, repair weak reasoning, and connect claims to evidence. Standard single-pass prompting often creates fluent but under-tested arguments. This project therefore implements a domain-specific large model system for debate argument generation. Given a motion and a target side, the system returns three debate-ready arguments and compares a direct generation strategy with an adversarial multi-agent strategy.
+Debate preparation requires more than producing plausible arguments. A useful tool must expose likely counterarguments, repair weak reasoning, and make the logic behind a stance explicit. Standard single-pass prompting often creates fluent but under-tested reasoning. This project therefore implements a domain-specific large model system for debate argument generation. Given a motion and a target side, the system returns one structured reason and one dialectical logic chain, then compares a direct generation strategy with a multi-agent strategy.
 
-The task is narrow, realistic, and suitable for a large-model-based system. It involves controlled generation, retrieval from public sources, role-conditioned reasoning, and evaluation of quality and efficiency. The intended users are debate students, presentation teams, and learners practising critical thinking.
+The task is narrow, realistic, and suitable for a large-model-based system. It involves controlled generation, role-conditioned reasoning, challenge-based refinement, and evaluation of quality and efficiency. The intended users are debate students, presentation teams, and learners practising critical thinking.
 
 \section{System Design}
-The system has a FastAPI backend, a React frontend, a Tavily search wrapper, and an Ollama local model client using \texttt{qwen3.5:4B}. The frontend supports English and Chinese, topic selection, target-side selection, live generation, result export, and side-by-side comparison.
+The system has a FastAPI backend, a React frontend, and an Ollama local model client using \texttt{qwen3.5:4B}. The frontend supports English and Chinese, topic selection, target-side selection, live generation, result export, and side-by-side comparison.
 
 Two strategies are implemented under the same task setting:
 
 \begin{itemize}
-\item \textbf{Single Agent}: one prompt uses \texttt{/no\_think}, search sources, and directly generates three arguments.
-\item \textbf{Adversarial Debate}: four debaters are prompted with \texttt{/think}: Pro Logic, Pro Evidence, Con Logic, and Con Evidence. They first produce constructive speeches, then rebut opposing speeches. A neutral synthesis agent extracts the strongest three arguments for the requested side. The implementation includes an \texttt{OLLAMA\_ENABLE\_THINKING} switch because the small local model can spend substantial time in the hidden reasoning channel during live demos.
+\item \textbf{Single Agent}: one prompt uses \texttt{/no\_think} and directly generates the required structured reason and logic chain.
+\item \textbf{Multi-Agent Logic Workflow}: one generator creates six candidate reasons; five opposition agents challenge the weakest logic; challenged survivors are optimized; five scoring agents rate the remaining candidates from 0 to 5. The highest average score becomes the final multi-agent result.
 \end{itemize}
 
-The adversarial design is intended to increase robustness. It forces arguments to survive attacks from the other side before being shown to the user. The system strips hidden thinking blocks from all outputs before UI display or export.
+The multi-agent design is intended to increase robustness. It forces candidate reasons to face targeted challenges and repair weak links before the final selection. Thinking mode is forced off for every local Ollama call, and the system strips hidden thinking blocks from all outputs before UI display or export.
 
-\section{Dataset and Knowledge Sources}
-The project includes a bilingual dataset of 30 debate motions across five domains: technology ethics, education, social policy, environment, and economy. Each item contains an ID, domain, English motion, Chinese motion, pro label, con label, and source note. The dataset was selected to ensure that both sides have plausible arguments and that public evidence is available through web search.
-
-Tavily is used as the external search source. Search results are cached locally to make demonstrations reproducible and reduce repeated API calls. Each generated result stores source titles, URLs, and snippets.
+\section{Dataset}
+The project includes a bilingual dataset of 30 debate motions across five domains: technology ethics, education, social policy, environment, and economy. Each item contains an ID, domain, English motion, Chinese motion, pro label, con label, and source note. The current experiment intentionally uses only the model's internal logic ability, so no outside material is attached to the prompts.
 
 \section{Experiment Design}
-The core experiment compares two modelling strategies under controlled conditions. Both strategies receive the same motion, target side, language, model, and search tool. The independent variable is the generation architecture: direct single-agent prompting versus adversarial multi-agent debate. The dependent variables are output quality, diversity, evidence use, response time, and approximate token cost.
+The core experiment compares two modelling strategies under controlled conditions. Both strategies receive the same motion, target side, language, and local model. The independent variable is the generation architecture: direct single-agent prompting versus multi-agent challenge, optimization, and scoring. The dependent variables are output quality, logical robustness, response time, and approximate token cost.
 
-The lightweight automatic evaluation records response time, token estimate, number of sources, argument count, and character n-gram diversity. The exported CSV includes manual scoring columns so human evaluation can judge persuasiveness, relevance, and practical debate usefulness.
+The lightweight automatic evaluation records response time, token estimate, candidate count, eliminated count, optimized count, scoring-agent count, and the final average score. The exported CSV includes manual scoring columns so human evaluation can judge persuasiveness, relevance, dialectical completeness, and practical debate usefulness.
 
 \section{Evaluation Methodology and Results}
 Quantitative results should be generated with:
@@ -54,23 +52,23 @@ After running the evaluation, paste the resulting table here.
 \centering
 \begin{tabular}{lrrrr}
 \toprule
-Strategy & Avg. time & Avg. tokens & Avg. sources & Diversity \\
+Strategy & Avg. time & Avg. tokens & Candidates & Final score \\
 \midrule
 Single Agent & TBD & TBD & TBD & TBD \\
-Adversarial Debate & TBD & TBD & TBD & TBD \\
+Multi-Agent & TBD & TBD & TBD & TBD \\
 \bottomrule
 \end{tabular}
 \caption{Lightweight automatic evaluation results.}
 \end{table}
 
-Qualitative analysis should compare 2-3 representative motions. The expected pattern is that the single-agent strategy is faster and cheaper, while the adversarial strategy gives more resilient arguments because it includes rebuttal-aware synthesis.
+Qualitative analysis should compare 2-3 representative motions. The expected pattern is that the single-agent strategy is faster and cheaper, while the multi-agent strategy gives more resilient reasoning because it includes targeted challenge, repair, and scoring.
 
 \section{Critical Analysis of Ethical Issues}
-The system can strengthen one-sided persuasion, which creates misuse risks in political communication, marketing, and online manipulation. It may also reproduce bias from web sources and from the base model. Search snippets can be incomplete or misleading, so the system exposes source links and does not claim that generated evidence is fully verified.
+The system can strengthen one-sided persuasion, which creates misuse risks in political communication, marketing, and online manipulation. It may also reproduce bias from the base model. Because the current experiment intentionally excludes outside material, the output should be read as logic practice rather than factual verification.
 
-The system mitigates these risks by showing both sides in the internal transcript, preserving sources, supporting manual evaluation, and framing outputs as debate preparation rather than factual authority. Privacy risks are limited because the system runs the model locally and does not require user accounts, but search queries are still sent to Tavily.
+The system mitigates these risks by showing the internal challenge transcript, supporting manual evaluation, and framing outputs as debate preparation rather than factual authority. Privacy risks are limited because the generation workflow runs locally and does not require user accounts.
 
 \section{Conclusion}
-This project demonstrates that architectural choices can change large-model behaviour. A multi-agent adversarial workflow costs more time and tokens, but it can produce arguments that better anticipate objections. The system therefore provides a practical example of comparative reasoning in domain-specific large model design.
+This project demonstrates that architectural choices can change large-model behaviour. A multi-agent logic workflow costs more time and tokens, but it can produce reasoning that better anticipates objections. The system therefore provides a practical example of comparative reasoning in domain-specific large model design.
 
 \end{document}

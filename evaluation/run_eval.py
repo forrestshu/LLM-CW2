@@ -15,14 +15,15 @@ RESULTS_DIR = ROOT / "evaluation" / "results"
 
 async def run_one(client: httpx.AsyncClient, topic: dict, language: str, side: str) -> dict:
     topic_text = topic["topic_en"] if language == "en" else topic["topic_zh"]
+    side_claim = topic["pro_label"] if side == "pro" else topic["con_label"]
     response = await client.post(
         "/api/generate",
         json={
             "topic": topic_text,
             "target_side": side,
             "language": language,
-            "use_search": True,
             "use_cache": True,
+            "side_claim": side_claim,
         },
         timeout=600.0,
     )
@@ -50,11 +51,14 @@ def flatten_row(item: dict) -> dict:
         "single_duration_sec": metrics["single_duration_sec"],
         "adversarial_duration_sec": metrics["adversarial_duration_sec"],
         "token_estimate": metrics["token_estimate"],
-        "source_count": metrics["source_count"],
         "single_argument_count": metrics["single_argument_count"],
         "adversarial_argument_count": metrics["adversarial_argument_count"],
-        "single_diversity": metrics["single_diversity"],
-        "adversarial_diversity": metrics["adversarial_diversity"],
+        "candidate_count": metrics["candidate_count"],
+        "eliminated_count": metrics["eliminated_count"],
+        "optimized_count": metrics["optimized_count"],
+        "scoring_agent_count": metrics["scoring_agent_count"],
+        "final_average_score": metrics["final_average_score"],
+        "latency_cost_ratio": metrics["latency_cost_ratio"],
         "human_single_score": "",
         "human_adversarial_score": "",
         "human_notes": "",
@@ -81,14 +85,17 @@ def write_outputs(items: list[dict], output_dir: Path) -> None:
     lines = [
         "# Lightweight Evaluation Summary",
         "",
-        "| Topic | Lang | Side | Single sec | Adversarial sec | Sources | Single diversity | Adv diversity |",
-        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
+        "| Topic | Lang | Side | Single sec | Multi sec | Candidates | Eliminated | Optimized | Scorers | Final avg | Latency ratio |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in rows:
         lines.append(
             f"| {row['topic_id']} | {row['language']} | {row['target_side']} | "
             f"{row['single_duration_sec']} | {row['adversarial_duration_sec']} | "
-            f"{row['source_count']} | {row['single_diversity']} | {row['adversarial_diversity']} |"
+            f"{row['candidate_count']} | {row['eliminated_count']} | "
+            f"{row['optimized_count']} | {row['scoring_agent_count']} | "
+            f"{row['final_average_score']} | "
+            f"{row['latency_cost_ratio']} |"
         )
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -117,4 +124,3 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
-

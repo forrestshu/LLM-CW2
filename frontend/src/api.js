@@ -17,7 +17,8 @@ export async function streamGeneration(payload, handlers) {
     body: JSON.stringify(payload),
   });
   if (!response.ok || !response.body) {
-    throw new Error(`Generation failed with HTTP ${response.status}`);
+    const detail = await readErrorDetail(response);
+    throw new Error(detail || `Generation failed with HTTP ${response.status}`);
   }
 
   const reader = response.body.getReader();
@@ -39,6 +40,24 @@ export async function streamGeneration(payload, handlers) {
   }
 }
 
+async function readErrorDetail(response) {
+  try {
+    const payload = await response.json();
+    if (Array.isArray(payload.detail)) {
+      return payload.detail
+        .map((item) => {
+          const field = Array.isArray(item.loc) ? item.loc.filter((part) => part !== "body").join(".") : "";
+          return field ? `${field}: ${item.msg}` : item.msg;
+        })
+        .join("; ");
+    }
+    if (typeof payload.detail === "string") return payload.detail;
+  } catch {
+    return "";
+  }
+  return "";
+}
+
 function parseEvent(chunk) {
   const lines = chunk.split("\n");
   const eventLine = lines.find((line) => line.startsWith("event:"));
@@ -49,4 +68,3 @@ function parseEvent(chunk) {
     payload: JSON.parse(dataLine.replace("data:", "").trim() || "{}"),
   };
 }
-

@@ -11,14 +11,11 @@ load_dotenv(ROOT_DIR / ".env")
 
 
 class Settings(BaseSettings):
-    llm_provider: str = Field(default="deepseek", alias="LLM_PROVIDER")
-    tavily_api_key: str | None = Field(default=None, alias="TAVILY_API_KEY")
     deepseek_api_key: str | None = Field(default=None, alias="DEEPSEEK_API_KEY")
     deepseek_base_url: str = Field(default="https://api.deepseek.com", alias="DEEPSEEK_BASE_URL")
     deepseek_model: str = Field(default="deepseek-v4-flash", alias="DEEPSEEK_MODEL")
     ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
     ollama_model: str = Field(default="qwen3.5:4B", alias="OLLAMA_MODEL")
-    ollama_enable_thinking: bool = Field(default=False, alias="OLLAMA_ENABLE_THINKING")
     app_env: str = Field(default="development", alias="APP_ENV")
     cache_dir: Path = ROOT_DIR / ".cache"
 

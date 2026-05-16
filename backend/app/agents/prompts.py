@@ -1,222 +1,367 @@
-from backend.app.models import Language, Side, Source
+import json
+
+from backend.app.models import DebateArgument, Language, Side
 
 
 ROLE_LABELS = {
     "en": {
         "pro": "supporting side",
         "con": "opposing side",
-        "single": "Single Agent",
-        "pro_logic": "Pro A, logic debater",
-        "pro_data": "Pro B, evidence debater",
-        "con_logic": "Con A, logic debater",
-        "con_data": "Con B, evidence debater",
-        "synthesis": "Neutral synthesis judge",
     },
     "zh": {
         "pro": "正方",
         "con": "反方",
-        "single": "单 Agent",
-        "pro_logic": "正方A，逻辑型辩手",
-        "pro_data": "正方B，数据型辩手",
-        "con_logic": "反方A，逻辑型辩手",
-        "con_data": "反方B，数据型辩手",
-        "synthesis": "中立综合裁判",
     },
 }
 
+ZH_REASON_MAX_CHARS = 35
+ZH_LOGIC_CHAIN_MAX_CHARS = 120
 
-def source_block(sources: list[Source], language: Language) -> str:
-    if not sources:
-        return "No live search sources are available. Be explicit that claims need verification." if language == "en" else "没有可用的实时搜索来源。涉及事实时请明确需要核验。"
-    lines = []
-    for idx, source in enumerate(sources, start=1):
-        lines.append(f"[{idx}] {source.title}\nURL: {source.url}\nSnippet: {source.snippet[:700]}")
-    heading = "Search sources" if language == "en" else "搜索资料"
-    return f"{heading}:\n" + "\n\n".join(lines)
+ZH_ARGUMENT_LENGTH_RULES = f"""- reason 不超过 {ZH_REASON_MAX_CHARS} 个汉字（含标点，按字符计）。
+- logic_chain 不超过 {ZH_LOGIC_CHAIN_MAX_CHARS} 个汉字（含标点，按字符计）。
+- 超出上限视为无效输出，必须在上限内写完。"""
 
+ZH_REASON_FIELD_DESC = "一句话论证理由"
+ZH_LOGIC_CHAIN_FIELD_DESC = (
+    "一段话，具有辩证性和说服力的论证我方观点，并说明该观点对我方立场的支持"
+)
+ZH_LOGIC_CHAIN_OPTIMIZE_DESC = (
+    "通过已有内容和反驳内容优化原 logic_chain 并生成新的一段话，"
+    "具有辩证性和说服力的论证我方观点，并说明该观点对我方立场的支持"
+)
 
-def single_prompt(topic: str, target_side: Side, language: Language, sources: list[Source]) -> list[dict[str, str]]:
-    if language == "zh":
-        system = """/no_think
-你是一位经验丰富的专业辩手。请只输出最终答案，不要输出思考过程。
+ZH_GENERATION_GROUND_RULES = """只依赖模型内部的概念分析、价值权衡、因果推理和常识判断；不要引用网址、实时材料、机构报告标题或具体统计数字。"""
 
-任务：基于辩题和搜索资料，为用户指定立场生成一段直接立论。
-输出必须是一段话，正好 4 句：第一句给出主张，第二句做简单解释，第三句给出一个相关例子或事实，第四句收束结论。
-每句控制在 35 个汉字以内，整体篇幅要和多 Agent 最终答案接近。
-不要使用标题、编号、项目符号、Markdown 列表或“核心主张”等 schema 标签。
-语言：中文。风格：清晰、直接、像一次未经对抗检验的单次回答。"""
-        user = f"""辩题：{topic}
-目标立场：{ROLE_LABELS[language][target_side]}
+ZH_LOGIC_CHAIN_STYLE_EXAMPLE = (
+    "正确示例（logic_chain 写法，勿照抄论点）："
+    "效率提升源于减少倦怠与专注度增加，虽有人质疑产出下降，但弹性排班可灵活补足工时，故整体福祉与效能更优。"
+)
 
-{source_block(sources, language)}
+EN_GENERATION_GROUND_RULES = (
+    "Rely only on internal conceptual analysis, value weighing, causal reasoning, "
+    "and common-sense judgment. Do not cite URLs, live material, report titles, or specific statistics."
+)
 
-请只输出一段话，正好 4 句，篇幅接近多 Agent 最终答案，但不要刻意展开复杂反驳。"""
-    else:
-        system = """/no_think
-You are an experienced competitive debater. Output only the final answer, with no hidden reasoning.
+EN_LOGIC_CHAIN_STYLE_EXAMPLE = (
+    "Correct example (logic_chain style only, do not copy the claim): "
+    '"Higher efficiency comes from less burnout and better focus; although some worry output may drop, '
+    "flexible scheduling can make up hours, so overall wellbeing and productivity improve."
+)
 
-Task: generate a direct argument for the requested side using the debate motion and search sources.
-Output one paragraph with exactly 4 sentences: sentence 1 states the claim, sentence 2 gives a simple explanation, sentence 3 gives one relevant example or fact, and sentence 4 closes the point.
-Do not use titles, numbering, bullet points, Markdown lists, or schema labels.
-Keep each sentence under 22 words, and keep the total length close to the multi-agent final answer.
-Language: English. Style: clear, direct, and like a single-pass answer that has not been adversarially tested."""
-        user = f"""Motion: {topic}
-Target side: {ROLE_LABELS[language][target_side]}
-
-{source_block(sources, language)}
-
-Return only one paragraph with exactly 4 sentences, close in length to the multi-agent final answer, without elaborate rebuttal work."""
-    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
-
-
-def debater_prompt(role_key: str, topic: str, language: Language, sources: list[Source]) -> list[dict[str, str]]:
-    side = "pro" if role_key.startswith("pro") else "con"
-    role_name = ROLE_LABELS[language][role_key]
-    if language == "zh":
-        specialty = "逻辑推理、价值判断、概念界定" if role_key.endswith("logic") else "真实数据、研究报告、案例证据"
-        system = f"""/no_think
-你是{role_name}。请只输出可展示的最终发言，不要输出思考过程。
-你的专长是：{specialty}。"""
-        user = f"""辩题：{topic}
-你的立场：{ROLE_LABELS[language][side]}
-
-{source_block(sources, language)}
-
-请输出一段短发言，只包含 1 个核心论点和 1 个论据。
-要求：不要用列表或标题；正好 2 句，第一句论点，第二句论据；每句少于 50 个汉字；中文输出。"""
-    else:
-        specialty = "logic, values, definitions, and causal reasoning" if role_key.endswith("logic") else "data, research evidence, and concrete cases"
-        system = f"""/no_think
-You are {role_name}. Output only the presentable final speech, with no hidden reasoning.
-Your specialty is {specialty}."""
-        user = f"""Motion: {topic}
-Your side: {ROLE_LABELS[language][side]}
-
-{source_block(sources, language)}
-
-Give a short speech with 1 core argument and 1 evidence point.
-Do not use titles or bullet points. Use exactly 2 sentences: first the argument, then the evidence. Keep each sentence under 50 words."""
-    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+EN_REASON_FIELD_DESC = "one-sentence argumentative reason for your side"
+EN_LOGIC_CHAIN_FIELD_DESC = (
+    "one paragraph that is dialectical and persuasive, arguing your side's viewpoint "
+    "and how that viewpoint supports your side's position on the motion"
+)
+EN_LOGIC_CHAIN_OPTIMIZE_DESC = (
+    "optimize the original logic_chain using the existing content and rebuttal content, "
+    "and produce a new paragraph that is dialectical and persuasive, arguing your side's "
+    "viewpoint and how that viewpoint supports your side's position on the motion"
+)
 
 
-def rebuttal_prompt(
-    role_key: str,
-    topic: str,
-    language: Language,
-    own_constructive: str,
-    opposing_constructives: str,
-) -> list[dict[str, str]]:
-    side = "pro" if role_key.startswith("pro") else "con"
-    role_name = ROLE_LABELS[language][role_key]
-    if language == "zh":
-        system = f"""/no_think
-你是{role_name}。请只输出可展示的最终发言，不要输出思考过程。"""
-        user = f"""辩题：{topic}
-你的立场：{ROLE_LABELS[language][side]}
-
-你的第一轮立论：
-{own_constructive}
-
-对方第一轮立论：
-{opposing_constructives}
-
-请输出一段第二轮反驳短发言，只包含 1 个反驳论点和 1 个支撑论据。
-不要用列表或标题；正好 2 句，第一句反驳论点，第二句论据；每句少于 50 个汉字。"""
-    else:
-        system = f"""/no_think
-You are {role_name}. Output only the presentable final speech, with no hidden reasoning."""
-        user = f"""Motion: {topic}
-Your side: {ROLE_LABELS[language][side]}
-
-Your round-one constructive:
-{own_constructive}
-
-Opposing round-one constructives:
-{opposing_constructives}
-
-Produce one short rebuttal paragraph with 1 rebuttal argument and 1 evidence point.
-Do not use titles or bullet points. Use exactly 2 sentences: first the rebuttal argument, then the evidence. Keep each sentence under 50 words."""
-    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+def opposite_side(side: Side) -> Side:
+    return "con" if side == "pro" else "pro"
 
 
-def synthesis_prompt(topic: str, target_side: Side, language: Language, transcript: str) -> list[dict[str, str]]:
-    if language == "zh":
-        system = """/no_think
-你是一位资深辩论裁判、论点分析师和决赛陈词教练。请只输出面向观众的最终答案，不要输出思考过程。"""
-        user = f"""辩题：{topic}
-需要提炼的立场：{ROLE_LABELS[language][target_side]}
-
-完整内部对抗记录：
-{transcript}
-
-请把内部对抗中经得起反驳的内容，整合成一段和单 Agent 篇幅接近、但论证质量明显更高的最终立论。
-输出必须是一段话，正好 4 句：第一句给出更精确的主张，第二句展开更深的因果链或利益权衡，第三句使用贴合辩题且多数观众熟悉的具体例子、制度事实或研究结论，第四句用让步反驳、比较权衡或风险转移等论证手法预判异议并压回目标立场。
-每句控制在 35 个汉字以内，整体篇幅不要明显长于单 Agent 最终答案。
-不要提及“内部对抗”“辩论记录”“第几轮”“Agent”“裁判”“对方刚才说”等过程信息。
-不要使用标题、编号、项目符号、Markdown 列表或 schema 标签。"""
-    else:
-        system = """/no_think
-You are a senior debate judge, argument analyst, and final-speech coach. Output only the audience-facing final answer, with no hidden reasoning."""
-        user = f"""Motion: {topic}
-Target side to extract: {ROLE_LABELS[language][target_side]}
-
-Full internal adversarial transcript:
-{transcript}
-
-Turn the strongest rebuttal-tested material from the internal debate into a final argument that is similar in length to the single-agent answer but visibly better in reasoning quality.
-Output one paragraph with exactly 4 sentences: sentence 1 states a sharper claim, sentence 2 develops a deeper causal chain or value tradeoff, sentence 3 uses a well-known and motion-specific example, institutional fact, or research finding, and sentence 4 uses concession-rebuttal, comparative weighing, or risk-shifting to answer an objection while showing why the target side still wins.
-Keep each sentence under 22 words, and do not make the total answer noticeably longer than the single-agent final answer.
-Do not mention the internal debate, transcript, rounds, agents, judge, or what the other side previously said.
-Do not use titles, numbering, bullets, Markdown lists, or schema labels."""
-    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
-
-
-def advantage_prompt(
+def _motion_context_block(
     topic: str,
     target_side: Side,
     language: Language,
-    single_answer: str,
-    final_synthesis: str,
-    transcript: str,
-) -> list[dict[str, str]]:
+    side_claim: str | None = None,
+) -> str:
+    challenge_side = opposite_side(target_side)
+    side_name = ROLE_LABELS[language][target_side]
+    challenge_name = ROLE_LABELS[language][challenge_side]
+    claim = (side_claim or "").strip()
+
     if language == "zh":
-        system = """/no_think
-你是辩论质量评估助手。请只输出合法 JSON，不要输出 Markdown、解释或思考过程。"""
+        your_claim = claim or (
+            "支持辩题命题（同意辩题所描述的政策或立场）"
+            if target_side == "pro"
+            else "反对辩题命题（不同意辩题所描述的政策或立场，采取与之相反的政策立场）"
+        )
+        challenge_claim = (
+            "支持辩题命题"
+            if challenge_side == "pro"
+            else "反对辩题命题"
+        )
+        return f"""【动笔前必读：辩题与立场】
+辩题（待裁决的完整命题）：{topic}
+你方：{side_name}
+你方必须论证的主张：{your_claim}
+{challenge_name}的主张方向：{challenge_claim}（不要写成这一方）
+
+立场规则（违反则整段论证无效）：
+1. 辩题是一句完整命题；正方=支持该命题，反方=反对该命题，不是随意选边。
+2. reason 与 logic_chain 必须直接服务「你方必须论证的主张」，不得论证对方主张。
+3. 生成前自检：你的 reason 是在帮正方还是帮反方？若与「你方」不符，必须重写。
+
+立场对照示例（只学对应关系，勿照抄论点）：
+辩题「中小学应全面禁止手机进校园」→ 正方=支持全面禁止；反方=反对全面禁止（可主张有限度允许携带/使用等）。
+若你方是反方，却写「不该带手机」「应该全面禁止」等，即立场错误（那是在帮正方）。"""
+
+    your_claim = claim or (
+        "Affirm the motion as stated (support the policy or position described in the motion)."
+        if target_side == "pro"
+        else "Negate the motion (oppose the policy or position described in the motion and argue the opposite policy stance)."
+    )
+    challenge_claim = (
+        "Affirms the motion as stated"
+        if challenge_side == "pro"
+        else "Negates the motion as stated"
+    )
+    return f"""[Read before writing: motion and side]
+Motion (the full proposition to adjudicate): {topic}
+Your side: {side_name}
+You must argue for: {your_claim}
+{challenge_name}'s direction: {challenge_claim} (do NOT argue this)
+
+Side rules (violations invalidate the argument):
+1. The motion is one complete proposition; Pro affirms it, Con negates it.
+2. reason and logic_chain must directly support YOUR claim, not the other side's claim.
+3. Self-check: are you helping Pro or Con? If it does not match your assigned side, rewrite.
+
+Worked example (learn the mapping only, do not copy claims):
+Motion "K-12 schools should ban student smartphones on campus" → Pro supports a ban; Con opposes a ban (e.g. regulated allowance).
+If you are Con, arguing "phones should be banned" is a side error (that helps Pro)."""
+
+
+def _constructive_system_prompt(language: Language) -> str:
+    if language == "zh":
+        return """/no_think
+你是一位经验丰富的专业辩手。请只输出合法 JSON，不要输出 Markdown、解释或思考过程。"""
+    return """/no_think
+You are an experienced competitive debater. Output valid JSON only, with no Markdown, explanation, or hidden reasoning."""
+
+
+def _logic_chain_style_rules(language: Language) -> str:
+    if language == "zh":
+        return f"""- logic_chain 必须是连贯的一段话（一个自然段），用自然语句完成论证，不要分段、不要列小标题。
+{ZH_LOGIC_CHAIN_STYLE_EXAMPLE}"""
+    return f"""- logic_chain must be one continuous paragraph written in natural prose. Do not split into sections or headings.
+{EN_LOGIC_CHAIN_STYLE_EXAMPLE}"""
+
+
+def _single_argument_field_requirements(language: Language) -> str:
+    style_rules = _logic_chain_style_rules(language)
+    if language == "zh":
+        return f"""要求：
+- reason：{ZH_REASON_FIELD_DESC}。
+- logic_chain：{ZH_LOGIC_CHAIN_FIELD_DESC}。
+{style_rules}
+{ZH_ARGUMENT_LENGTH_RULES}"""
+    return f"""Requirements:
+- reason: {EN_REASON_FIELD_DESC}.
+- logic_chain: {EN_LOGIC_CHAIN_FIELD_DESC}.
+{style_rules}"""
+
+
+def _single_argument_json_template(language: Language) -> str:
+    if language == "zh":
+        return f"""输出 JSON 对象，格式必须完全一致：
+{{"reason":"{ZH_REASON_FIELD_DESC}","logic_chain":"{ZH_LOGIC_CHAIN_FIELD_DESC}"}}"""
+    return f"""Return exactly this JSON object:
+{{"reason":"{EN_REASON_FIELD_DESC}","logic_chain":"{EN_LOGIC_CHAIN_FIELD_DESC}"}}"""
+
+
+def _single_argument_user_block(language: Language) -> str:
+    return f"{_single_argument_json_template(language)}\n\n{_single_argument_field_requirements(language)}"
+
+
+def _constructive_messages_base(
+    topic: str,
+    target_side: Side,
+    language: Language,
+    side_claim: str | None = None,
+) -> tuple[str, str]:
+    motion_context = _motion_context_block(topic, target_side, language, side_claim)
+    ground_rules = ZH_GENERATION_GROUND_RULES if language == "zh" else EN_GENERATION_GROUND_RULES
+    system = _constructive_system_prompt(language)
+    user_prefix = f"""{motion_context}
+
+{ground_rules}
+
+"""
+    return system, user_prefix
+
+
+def _candidate_generation_task_block(language: Language) -> str:
+    if language == "zh":
+        return f"""请生成 6 个彼此有明显区分的立论，每条都必须论证「你方必须论证的主张」，id 为 R1 到 R6。
+
+输出 JSON 对象：
+{{"candidates":[{{"id":"R1","reason":"...","logic_chain":"..."}},{{"id":"R2","reason":"...","logic_chain":"..."}},{{"id":"R3","reason":"...","logic_chain":"..."}},{{"id":"R4","reason":"...","logic_chain":"..."}},{{"id":"R5","reason":"...","logic_chain":"..."}},{{"id":"R6","reason":"...","logic_chain":"..."}}]}}
+
+要求：
+- 必须正好 6 条，id 必须是 R1 到 R6。
+每一条候选均须满足下列要求（与单条立论完全相同）：
+"""
+    return f"""Generate 6 distinct arguments, each arguing YOUR assigned claim on the motion, with ids R1 through R6.
+
+Return this JSON object:
+{{"candidates":[{{"id":"R1","reason":"...","logic_chain":"..."}},{{"id":"R2","reason":"...","logic_chain":"..."}},{{"id":"R3","reason":"...","logic_chain":"..."}},{{"id":"R4","reason":"...","logic_chain":"..."}},{{"id":"R5","reason":"...","logic_chain":"..."}},{{"id":"R6","reason":"...","logic_chain":"..."}}]}}
+
+Requirements:
+- Return exactly 6 items, with ids R1 through R6.
+Every candidate must satisfy the following requirements (identical to single-argument generation):
+"""
+
+
+def single_prompt(
+    topic: str,
+    target_side: Side,
+    language: Language,
+    side_claim: str | None = None,
+) -> list[dict[str, str]]:
+    system, user_prefix = _constructive_messages_base(topic, target_side, language, side_claim)
+    user = f"{user_prefix}{_single_argument_user_block(language)}"
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def candidate_generation_prompt(
+    topic: str,
+    target_side: Side,
+    language: Language,
+    side_claim: str | None = None,
+) -> list[dict[str, str]]:
+    system, user_prefix = _constructive_messages_base(topic, target_side, language, side_claim)
+    user = f"{user_prefix}{_candidate_generation_task_block(language)}{_single_argument_field_requirements(language)}"
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def challenge_prompt(
+    agent_index: int,
+    topic: str,
+    target_side: Side,
+    language: Language,
+    candidates: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    candidate_block = json.dumps(candidates, ensure_ascii=False, indent=2)
+    challenge_side = opposite_side(target_side)
+    if language == "zh":
+        system = f"""/no_think
+你是第二轮反对方 agent {agent_index}。请只输出合法 JSON，不要输出 Markdown、解释或思考过程。"""
+        user = f"""辩题：{topic}
+你代表的立场：{ROLE_LABELS[language][challenge_side]}
+你要质询的对象：{ROLE_LABELS[language][target_side]}第一轮生成的 6 个理由
+
+全部候选理由：
+{candidate_block}
+
+请选择你认为最站不住脚的一条，只能选一个 id。
+
+输出 JSON 对象：
+{{"target_id":"R1","question":"对该逻辑的质询","weakness_reason":"为什么它最站不住脚","opposing_reason":"反对方基于自身立场给出的反对理由"}}
+
+要求：
+- target_id 必须来自 R1 到 R6。
+- question、weakness_reason、opposing_reason 都必须具体指向被选中的逻辑链条。"""
+    else:
+        system = f"""/no_think
+You are opposition agent {agent_index} in round two. Output valid JSON only, with no Markdown, explanation, or hidden reasoning."""
+        user = f"""Motion: {topic}
+Your side: {ROLE_LABELS[language][challenge_side]}
+You are challenging the 6 reasons generated for: {ROLE_LABELS[language][target_side]}
+
+All candidate reasons:
+{candidate_block}
+
+Choose the one logic chain you consider weakest. Pick exactly one id.
+
+Return this JSON object:
+{{"target_id":"R1","question":"the challenge question","weakness_reason":"why this logic is weakest","opposing_reason":"the opposing side's reason against it"}}
+
+Requirements:
+- target_id must be one of R1 through R6.
+- question, weakness_reason, and opposing_reason must directly address the chosen logic chain."""
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def optimization_prompt(
+    topic: str,
+    target_side: Side,
+    language: Language,
+    candidate: dict[str, str],
+    challenges: list[dict[str, str]],
+    side_claim: str | None = None,
+) -> list[dict[str, str]]:
+    challenge_block = json.dumps(challenges, ensure_ascii=False, indent=2)
+    candidate_block = json.dumps(candidate, ensure_ascii=False, indent=2)
+    system, user_prefix = _constructive_messages_base(topic, target_side, language, side_claim)
+    if language == "zh":
+        optimize_context = f"""原观点：
+{candidate_block}
+
+第二轮针对该观点的全部质询与反对理由：
+{challenge_block}
+
+请保留原 reason 的核心方向；优化后仍必须论证「你方必须论证的主张」，不得滑向对方立场。
+logic_chain：{ZH_LOGIC_CHAIN_OPTIMIZE_DESC}；必须吸收所有质询与反驳内容。
+
+"""
+    else:
+        optimize_context = f"""Original candidate:
+{candidate_block}
+
+All challenges and opposing reasons aimed at this candidate:
+{challenge_block}
+
+Keep the core direction of the original reason. The optimized text must still argue YOUR assigned claim, not the other side.
+logic_chain: {EN_LOGIC_CHAIN_OPTIMIZE_DESC}; absorb every challenge and rebuttal direction.
+
+"""
+    user = f"{user_prefix}{optimize_context}{_single_argument_user_block(language)}"
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def scoring_prompt(
+    agent_index: int,
+    topic: str,
+    target_side: Side,
+    language: Language,
+    candidates: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    candidate_block = json.dumps(candidates, ensure_ascii=False, indent=2)
+    if language == "zh":
+        system = f"""/no_think
+你是第四轮打分 agent {agent_index}。请只输出合法 JSON，不要输出 Markdown、解释或思考过程。"""
         user = f"""辩题：{topic}
 目标立场：{ROLE_LABELS[language][target_side]}
 
-单 Agent 答案：
-{single_answer}
+待评分观点：
+{candidate_block}
 
-多 Agent final synthesis：
-{final_synthesis}
+请根据相关性、逻辑完整性、辩证性、抗质询能力，对每个观点打 0 到 5 的整数分。
 
-内部对抗记录：
-{transcript}
+输出 JSON 对象：
+{{"scores":[{{"id":"R1","score":0,"rationale":"简短评分理由"}}]}}
 
-请为 final synthesis 的每一句生成标注，用于解释多 Agent 优势。
-输出 JSON 对象，格式必须是：
-{{"rebuttal_notes":["第1句反驳来源说明","第2句反驳来源说明","第3句反驳来源说明","第4句反驳来源说明"],"advantage_notes":["第1句相比单 Agent 好在哪里","第2句相比单 Agent 好在哪里","第3句相比单 Agent 好在哪里","第4句相比单 Agent 好在哪里"]}}
-要求：rebuttal_notes 要指出这句话吸收或回应了反方哪个具体反驳方向，例如“回应反方关于过度审查的质疑”；advantage_notes 要说明比单 Agent 更好的维度，例如论点更深、例子更贴题、例子更为大众熟悉、因果链更完整、使用了让步反驳或比较权衡。
-每条说明少于 24 个汉字。不要改写 final synthesis 原文。"""
+要求：
+- 必须给每个待评分观点一个分数。
+- score 必须是 0、1、2、3、4、5 之一。"""
     else:
-        system = """/no_think
-You are a debate-quality evaluation assistant. Output valid JSON only, with no Markdown, explanation, or hidden reasoning."""
+        system = f"""/no_think
+You are scoring agent {agent_index} in round four. Output valid JSON only, with no Markdown, explanation, or hidden reasoning."""
         user = f"""Motion: {topic}
 Target side: {ROLE_LABELS[language][target_side]}
 
-Single-agent answer:
-{single_answer}
+Candidates to score:
+{candidate_block}
 
-Multi-agent final synthesis:
-{final_synthesis}
+Score every candidate from 0 to 5 as an integer, using relevance, logical completeness, dialectical strength, and resistance to challenge.
 
-Internal adversarial transcript:
-{transcript}
+Return this JSON object:
+{{"scores":[{{"id":"R1","score":0,"rationale":"short scoring reason"}}]}}
 
-Create annotations for each sentence of the final synthesis to explain the multi-agent advantage.
-Return a JSON object exactly like:
-{{"rebuttal_notes":["note for sentence 1","note for sentence 2","note for sentence 3","note for sentence 4"],"advantage_notes":["advantage over single agent for sentence 1","advantage over single agent for sentence 2","advantage over single agent for sentence 3","advantage over single agent for sentence 4"]}}
-Requirements: rebuttal_notes should identify which opposing rebuttal direction the sentence absorbs or answers, such as "answers the over-censorship objection"; advantage_notes should name the quality improvement over the single agent, such as deeper reasoning, better-fitted example, more widely known example, fuller causal chain, concession-rebuttal, or comparative weighing.
-Keep each note under 14 words. Do not rewrite the final synthesis."""
+Requirements:
+- Every candidate must receive one score.
+- score must be one of 0, 1, 2, 3, 4, 5."""
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def argument_to_dict(argument: DebateArgument, candidate_id: str | None = None) -> dict[str, str]:
+    data = argument.model_dump()
+    if candidate_id:
+        return {"id": candidate_id, **data}
+    return data
