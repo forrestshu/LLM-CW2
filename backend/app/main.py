@@ -9,8 +9,9 @@ from fastapi.responses import StreamingResponse
 
 from backend.app.agents.debate import DebateOrchestrator
 from backend.app.config import ROOT_DIR, get_settings
+from backend.app.core.judge import JudgeClient
 from backend.app.core.ollama import OllamaClient
-from backend.app.models import GenerationRequest, Language, Topic
+from backend.app.models import EvaluationRequest, GenerationRequest, Language, Topic
 
 
 app = FastAPI(title="DTS407TC A2 Debate Argument Generator", version="0.1.0")
@@ -94,6 +95,20 @@ async def generate_stream(request: GenerationRequest):
         await task
 
     return StreamingResponse(event_iterator(), media_type="text/event-stream")
+
+
+@app.post("/api/evaluate")
+async def evaluate(request: EvaluationRequest):
+    settings = get_settings()
+    judge = JudgeClient(settings.judge_api_key, settings.judge_model, settings.judge_base_url)
+    result = await judge.evaluate(
+        topic=request.topic,
+        target_side=request.target_side,
+        language=request.language,
+        single_content=request.single_content,
+        adversarial_content=request.adversarial_content,
+    )
+    return result
 
 
 @app.get("/")

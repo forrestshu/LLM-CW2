@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     ollama_model: str = Field(default="qwen3.5:4B", alias="OLLAMA_MODEL")
     app_env: str = Field(default="development", alias="APP_ENV")
     cache_dir: Path = ROOT_DIR / ".cache"
+    judge_api_key: str | None = Field(default=None, alias="JUDGE_API_KEY")
+    judge_model: str = Field(default="deepseek-chat", alias="JUDGE_MODEL")
+    judge_base_url: str = Field(default="https://api.deepseek.com", alias="JUDGE_BASE_URL")
 
     model_config = SettingsConfigDict(extra="ignore")
 

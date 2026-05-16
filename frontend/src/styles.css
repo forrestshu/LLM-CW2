@@ -555,6 +555,110 @@ select {
   flex-shrink: 0;
 }
 
+.evaluation-panel {
+  flex-shrink: 0;
+}
+
+.evaluation-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 0 0 14px;
+}
+
+.score-box {
+  align-items: center;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+}
+
+.score-box.winner {
+  border-color: var(--good);
+  background: oklch(0.95 0.03 155);
+}
+
+.score-box span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.score-box strong {
+  color: var(--ink);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.evaluation-winner {
+  align-items: center;
+  background: var(--accent-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 12px;
+}
+
+.evaluation-winner span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.evaluation-winner strong {
+  color: var(--good);
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.evaluation-reasoning {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.evaluation-reasoning > div {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.evaluation-reasoning span {
+  color: var(--muted);
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 850;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.evaluation-reasoning p {
+  color: var(--ink);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.winner-reasoning {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+}
+
+.winner-reasoning span {
+  color: var(--accent) !important;
+}
+
 .metric-list {
   display: grid;
   gap: 8px 14px;

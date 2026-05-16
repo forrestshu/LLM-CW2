@@ -81,3 +81,21 @@ class GenerationResult(BaseModel):
 class StreamEvent(BaseModel):
     event: str
     payload: dict[str, Any]
+
+
+class EvaluationRequest(BaseModel):
+    topic: str = Field(min_length=1)
+    target_side: Side = "pro"
+    language: Language = "en"
+    single_content: str = Field(min_length=1)
+    adversarial_content: str = Field(min_length=1)
+
+
+class EvaluationResult(BaseModel):
+    single_score: int
+    adversarial_score: int
+    single_reasoning: str
+    adversarial_reasoning: str
+    winner: str
+    winner_reasoning: str
+    total_duration_sec: float

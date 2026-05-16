@@ -9,8 +9,9 @@ import {
   Loader2,
   Play,
   ShieldCheck,
+  Scale,
 } from "lucide-react";
-import { fetchHealth, fetchTopics, streamGeneration } from "./api.js";
+import { evaluateResult, fetchHealth, fetchTopics, streamGeneration } from "./api.js";
 
 const COPY = {
   en: {
@@ -45,6 +46,18 @@ const COPY = {
     streamingHint: "Agent output appears here while the workflow runs.",
     reason: "Reason",
     logicChain: "Logic chain",
+    evaluate: "LLM Judge Evaluation",
+    evaluating: "Evaluating...",
+    evaluationResult: "Evaluation Result",
+    singleScore: "Single Score",
+    adversarialScore: "Multi-Agent Score",
+    singleReasoning: "Single Reasoning",
+    adversarialReasoning: "Multi-Agent Reasoning",
+    winner: "Winner",
+    winnerReasoning: "Winner Reasoning",
+    tie: "Tie",
+    wonSingle: "Single Won",
+    wonAdversarial: "Multi-Agent Won",
   },
   zh: {
     title: "多 Agent 论点生成系统",
@@ -78,6 +91,18 @@ const COPY = {
     streamingHint: "工作流运行时，Agent 输出会显示在这里。",
     reason: "理由",
     logicChain: "逻辑链条",
+    evaluate: "LLM 裁判评估",
+    evaluating: "评估中...",
+    evaluationResult: "评估结果",
+    singleScore: "单 Agent 得分",
+    adversarialScore: "多 Agent 得分",
+    singleReasoning: "单 Agent 评价",
+    adversarialReasoning: "多 Agent 评价",
+    winner: "获胜者",
+    winnerReasoning: "获胜理由",
+    tie: "平局",
+    wonSingle: "单 Agent 获胜",
+    wonAdversarial: "多 Agent 获胜",
   },
 };
 
@@ -96,6 +121,8 @@ export default function App() {
   const [adversarialSegments, setAdversarialSegments] = useState([]);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+  const [evaluating, setEvaluating] = useState(false);
+  const [evaluation, setEvaluation] = useState(null);
 
   const t = COPY[language];
 
@@ -121,6 +148,7 @@ export default function App() {
     setSingleSegments([]);
     setAdversarialSegments([]);
     setResult(null);
+    setEvaluation(null);
     setError("");
     try {
       await streamGeneration(
@@ -157,6 +185,27 @@ export default function App() {
       setRunning(false);
     } finally {
       setRunning(false);
+    }
+  }
+
+  async function evaluate() {
+    if (!result?.single_agent?.content || !result?.adversarial?.content) return;
+    setEvaluating(true);
+    setEvaluation(null);
+    setError("");
+    try {
+      const evalResult = await evaluateResult({
+        topic: activeTopic.trim(),
+        target_side: targetSide,
+        language,
+        single_content: result.single_agent.content,
+        adversarial_content: result.adversarial.content,
+      });
+      setEvaluation(evalResult);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setEvaluating(false);
     }
   }
 
@@ -300,6 +349,37 @@ export default function App() {
         </section>
 
         {error && <div className="error-line">{error}</div>}
+
+        {result && (
+          <section className="control-surface">
+            <button
+              className="secondary-button"
+              onClick={evaluate}
+              disabled={evaluating || !result?.single_agent?.content || !result?.adversarial?.content}
+            >
+              {evaluating ? <Loader2 className="spin" size={18} /> : <Scale size={18} />}
+              {evaluating ? t.evaluating : t.evaluate}
+            </button>
+          </section>
+        )}
+
+        {evaluation && (
+          <EvaluationPanel
+            title={t.evaluationResult}
+            result={evaluation}
+            labels={{
+              singleScore: t.singleScore,
+              adversarialScore: t.adversarialScore,
+              singleReasoning: t.singleReasoning,
+              adversarialReasoning: t.adversarialReasoning,
+              winner: t.winner,
+              winnerReasoning: t.winnerReasoning,
+              tie: t.tie,
+              wonSingle: t.wonSingle,
+              wonAdversarial: t.wonAdversarial,
+            }}
+          />
+        )}
 
         <section className="results-grid">
           <div className="single-column">
@@ -714,5 +794,52 @@ function Metric({ label, value }) {
       <dt>{label}</dt>
       <dd>{value ?? "·"}</dd>
     </>
+  );
+}
+
+function EvaluationPanel({ title, result, labels }) {
+  return (
+    <article className="info-panel evaluation-panel">
+      <div className="panel-heading">
+        <Scale size={18} />
+        <h2>{title}</h2>
+      </div>
+      <div className="evaluation-scores">
+        <div className={`score-box ${result.single_score > result.adversarial_score ? "winner" : ""}`}>
+          <span>{labels.singleScore}</span>
+          <strong>{result.single_score}/10</strong>
+        </div>
+        <div className={`score-box ${result.adversarial_score > result.single_score ? "winner" : ""}`}>
+          <span>{labels.adversarialScore}</span>
+          <strong>{result.adversarial_score}/10</strong>
+        </div>
+      </div>
+      <div className="evaluation-winner">
+        <span>{labels.winner}:</span>
+        <strong>
+          {result.winner === "tie"
+            ? labels.tie
+            : result.winner === "single"
+              ? labels.wonSingle
+              : labels.wonAdversarial}
+        </strong>
+      </div>
+      <div className="evaluation-reasoning">
+        <div>
+          <span>{labels.singleReasoning}</span>
+          <p>{result.single_reasoning}</p>
+        </div>
+        <div>
+          <span>{labels.adversarialReasoning}</span>
+          <p>{result.adversarial_reasoning}</p>
+        </div>
+        {result.winner_reasoning && (
+          <div className="winner-reasoning">
+            <span>{labels.winnerReasoning}</span>
+            <p>{result.winner_reasoning}</p>
+          </div>
+        )}
+      </div>
+    </article>
   );
 }
