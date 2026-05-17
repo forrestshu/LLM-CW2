@@ -92,10 +92,11 @@ class EvaluationRequest(BaseModel):
 
 
 class EvaluationResult(BaseModel):
-    single_score: int
-    adversarial_score: int
-    single_reasoning: str
-    adversarial_reasoning: str
+    single_scores: dict[str, int]
+    adversarial_scores: dict[str, int]
+    single_total: float
+    adversarial_total: float
+    dimension_reasoning: dict[str, dict[str, str]]
     winner: str
     winner_reasoning: str
     total_duration_sec: float

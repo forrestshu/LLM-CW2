@@ -43,12 +43,13 @@ def load_topics() -> list[Topic]:
 async def health():
     settings = get_settings()
     llm = OllamaClient(settings.ollama_base_url, settings.ollama_model, enable_thinking=False)
+    ollama_health = await llm.health()
     return {
         "app": "ok",
         "provider": "ollama",
         "model": settings.ollama_model,
         "thinking_enabled": False,
-        "ollama": await llm.health(),
+        "ollama": ollama_health,
         "cache": _generation_cache_status(settings.cache_dir),
     }
 

@@ -246,10 +246,11 @@ def challenge_prompt(
 你代表的立场：{ROLE_LABELS[language][challenge_side]}
 你要质询的对象：{ROLE_LABELS[language][target_side]}第一轮生成的 6 个理由
 
-全部候选理由：
+全部候选理由（顺序已随机打乱，不代表质量优劣）：
 {candidate_block}
 
 请选择你认为最站不住脚的一条，只能选一个 id。
+重要：第一个展示的理由不一定是最好的，最后一个也不一定是最差的。请根据逻辑内容判断，而非顺序位置。
 
 输出 JSON 对象：
 {{"target_id":"R1","question":"对该逻辑的质询","weakness_reason":"为什么它最站不住脚","opposing_reason":"反对方基于自身立场给出的反对理由"}}
@@ -264,10 +265,11 @@ You are opposition agent {agent_index} in round two. Output valid JSON only, wit
 Your side: {ROLE_LABELS[language][challenge_side]}
 You are challenging the 6 reasons generated for: {ROLE_LABELS[language][target_side]}
 
-All candidate reasons:
+All candidate reasons (order randomly shuffled; order does not indicate quality):
 {candidate_block}
 
 Choose the one logic chain you consider weakest. Pick exactly one id.
+Important: The first reason shown is not necessarily the best; the last is not necessarily the worst. Judge based on logical content, not position.
 
 Return this JSON object:
 {{"target_id":"R1","question":"the challenge question","weakness_reason":"why this logic is weakest","opposing_reason":"the opposing side's reason against it"}}

@@ -559,6 +559,77 @@ select {
   flex-shrink: 0;
 }
 
+.evaluation-dimensions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 16px;
+}
+
+.dimension-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dimension-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dimension-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar-group {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: auto 1fr;
+}
+
+.bar-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-content: center;
+}
+
+.bar-label span {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.bar-label strong {
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.bar-container {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  height: 22px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar {
+  background: oklch(0.55 0.1 215);
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.bar.winner {
+  background: var(--good);
+}
+
 .evaluation-scores {
   display: grid;
   grid-template-columns: 1fr 1fr;

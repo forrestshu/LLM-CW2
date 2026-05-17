@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import json
+import random
 import re
 import time
 from collections import Counter, defaultdict
@@ -272,7 +273,7 @@ class DebateOrchestrator:
     ) -> list[TranscriptItem]:
         await emit("stage", {"stage": "round_2", "message": _stage_message("round_2")})
         tasks = [
-            self._run_challenge_agent(index, request, candidates, emit)
+            self._run_challenge_agent(index, request, candidates, emit, random.Random(index))
             for index in range(1, OPPOSITION_AGENT_COUNT + 1)
         ]
         return await asyncio.gather(*tasks)
@@ -283,12 +284,17 @@ class DebateOrchestrator:
         request: GenerationRequest,
         candidates: list[dict[str, str]],
         emit: EventCallback,
+        rng: random.Random | None = None,
     ) -> TranscriptItem:
+        rng = rng or random.Random()
+        shuffled = candidates.copy()
+        rng.shuffle(shuffled)
+
         role = f"opposition_{agent_index}"
         side = _opposite_side(request.target_side)
         await emit("agent_start", {"panel": "adversarial", "stage": "round_2", "role": role, "side": side})
         response = await self.llm.chat(
-            challenge_prompt(agent_index, request.topic, request.target_side, request.language, candidates),
+            challenge_prompt(agent_index, request.topic, request.target_side, request.language, shuffled),
             temperature=0.65,
             max_tokens=650,
             thinking=False,
@@ -403,7 +409,7 @@ class DebateOrchestrator:
     ) -> list[TranscriptItem]:
         await emit("stage", {"stage": "round_4", "message": _stage_message("round_4")})
         tasks = [
-            self._run_scoring_agent(index, request, candidates, emit)
+            self._run_scoring_agent(index, request, candidates, emit, random.Random(index + 100))
             for index in range(1, SCORING_AGENT_COUNT + 1)
         ]
         return await asyncio.gather(*tasks)
@@ -414,11 +420,16 @@ class DebateOrchestrator:
         request: GenerationRequest,
         candidates: list[dict[str, str]],
         emit: EventCallback,
+        rng: random.Random | None = None,
     ) -> TranscriptItem:
+        rng = rng or random.Random()
+        shuffled = candidates.copy()
+        rng.shuffle(shuffled)
+
         role = f"scoring_{agent_index}"
         await emit("agent_start", {"panel": "adversarial", "stage": "round_4", "role": role, "side": "neutral"})
         response = await self.llm.chat(
-            scoring_prompt(agent_index, request.topic, request.target_side, request.language, candidates),
+            scoring_prompt(agent_index, request.topic, request.target_side, request.language, shuffled),
             temperature=0.35,
             max_tokens=900,
             thinking=False,

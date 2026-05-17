@@ -58,6 +58,9 @@ const COPY = {
     tie: "Tie",
     wonSingle: "Single Won",
     wonAdversarial: "Multi-Agent Won",
+    dimensionCoherence: "Reasoning Coherence",
+    dimensionCompleteness: "Argument Completeness",
+    dimensionCounterDefense: "Counter-Defense Ability",
   },
   zh: {
     title: "多 Agent 论点生成系统",
@@ -103,6 +106,9 @@ const COPY = {
     tie: "平局",
     wonSingle: "单 Agent 获胜",
     wonAdversarial: "多 Agent 获胜",
+    dimensionCoherence: "推理自洽性",
+    dimensionCompleteness: "论证完整性",
+    dimensionCounterDefense: "反反驳能力",
   },
 };
 
@@ -377,6 +383,9 @@ export default function App() {
               tie: t.tie,
               wonSingle: t.wonSingle,
               wonAdversarial: t.wonAdversarial,
+              dimensionCoherence: t.dimensionCoherence,
+              dimensionCompleteness: t.dimensionCompleteness,
+              dimensionCounterDefense: t.dimensionCounterDefense,
             }}
           />
         )}
@@ -798,20 +807,82 @@ function Metric({ label, value }) {
 }
 
 function EvaluationPanel({ title, result, labels }) {
+  const dimensions = [
+    {
+      key: "reasoning_coherence",
+      label: labels.dimensionCoherence,
+      single: result.single_scores?.reasoning_coherence || 0,
+      adversarial: result.adversarial_scores?.reasoning_coherence || 0,
+      reasoningSingle: result.dimension_reasoning?.reasoning_coherence?.single || "",
+      reasoningAdversarial: result.dimension_reasoning?.reasoning_coherence?.adversarial || "",
+    },
+    {
+      key: "argument_completeness",
+      label: labels.dimensionCompleteness,
+      single: result.single_scores?.argument_completeness || 0,
+      adversarial: result.adversarial_scores?.argument_completeness || 0,
+      reasoningSingle: result.dimension_reasoning?.argument_completeness?.single || "",
+      reasoningAdversarial: result.dimension_reasoning?.argument_completeness?.adversarial || "",
+    },
+    {
+      key: "counter_defense",
+      label: labels.dimensionCounterDefense,
+      single: result.single_scores?.counter_defense || 0,
+      adversarial: result.adversarial_scores?.counter_defense || 0,
+      reasoningSingle: result.dimension_reasoning?.counter_defense?.single || "",
+      reasoningAdversarial: result.dimension_reasoning?.counter_defense?.adversarial || "",
+    },
+  ];
+
   return (
     <article className="info-panel evaluation-panel">
       <div className="panel-heading">
         <Scale size={18} />
         <h2>{title}</h2>
       </div>
+
+      <div className="evaluation-dimensions">
+        {dimensions.map((dim) => (
+          <div key={dim.key} className="dimension-row">
+            <span className="dimension-label">{dim.label}</span>
+            <div className="dimension-bars">
+              <div className="bar-group">
+                <div className="bar-label">
+                  <span>{labels.singleScore}</span>
+                  <strong>{dim.single}/10</strong>
+                </div>
+                <div className="bar-container">
+                  <div
+                    className={`bar ${dim.single > dim.adversarial ? "winner" : ""}`}
+                    style={{ width: `${dim.single * 10}%` }}
+                  />
+                </div>
+              </div>
+              <div className="bar-group">
+                <div className="bar-label">
+                  <span>{labels.adversarialScore}</span>
+                  <strong>{dim.adversarial}/10</strong>
+                </div>
+                <div className="bar-container">
+                  <div
+                    className={`bar ${dim.adversarial > dim.single ? "winner" : ""}`}
+                    style={{ width: `${dim.adversarial * 10}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="evaluation-scores">
-        <div className={`score-box ${result.single_score > result.adversarial_score ? "winner" : ""}`}>
+        <div className={`score-box ${result.single_total > result.adversarial_total ? "winner" : ""}`}>
           <span>{labels.singleScore}</span>
-          <strong>{result.single_score}/10</strong>
+          <strong>{result.single_total}/10</strong>
         </div>
-        <div className={`score-box ${result.adversarial_score > result.single_score ? "winner" : ""}`}>
+        <div className={`score-box ${result.adversarial_total > result.single_total ? "winner" : ""}`}>
           <span>{labels.adversarialScore}</span>
-          <strong>{result.adversarial_score}/10</strong>
+          <strong>{result.adversarial_total}/10</strong>
         </div>
       </div>
       <div className="evaluation-winner">
@@ -824,22 +895,14 @@ function EvaluationPanel({ title, result, labels }) {
               : labels.wonAdversarial}
         </strong>
       </div>
-      <div className="evaluation-reasoning">
-        <div>
-          <span>{labels.singleReasoning}</span>
-          <p>{result.single_reasoning}</p>
-        </div>
-        <div>
-          <span>{labels.adversarialReasoning}</span>
-          <p>{result.adversarial_reasoning}</p>
-        </div>
-        {result.winner_reasoning && (
+      {result.winner_reasoning && (
+        <div className="evaluation-reasoning">
           <div className="winner-reasoning">
             <span>{labels.winnerReasoning}</span>
             <p>{result.winner_reasoning}</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </article>
   );
 }
