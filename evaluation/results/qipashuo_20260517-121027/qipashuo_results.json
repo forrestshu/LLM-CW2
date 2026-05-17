@@ -1,0 +1,1622 @@
+[
+  {
+    "id": "1",
+    "topic": "该不该看伴侣手机？",
+    "metrics": {
+      "total_duration_sec": 62.494,
+      "single_duration_sec": 4.242,
+      "adversarial_duration_sec": 62.475,
+      "token_estimate": 5085,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 3.8,
+      "latency_cost_ratio": 14.7277
+    },
+    "single_agent_tokens": 592,
+    "adversarial_tokens": 13773,
+    "single_scores": {
+      "reasoning_coherence": 6,
+      "argument_completeness": 5,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 8
+    },
+    "single_total": 5.0,
+    "adversarial_total": 8.3,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "前提与结论连接较弱，从查看手机到增强信任缺乏必然性说明",
+        "adversarial": "推理严密，从主动透明契约到深化关系的因果路径清晰连贯"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条跳跃，省去了查看手机如何消除猜疑、适度监督如何预防背叛等关键环节",
+        "adversarial": "论证结构完整，涵盖了背景、策略、机制和结果，层次分明"
+      },
+      "counter_defense": {
+        "single": "仅浅层提及侵犯隐私，未有效回击，缺乏对不信任感等核心反驳的防御",
+        "adversarial": "主动区分被动监控与自愿透明，有力化解了侵犯隐私和缺乏信任的反驳"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力上均明显优于单Agent方案，其逻辑链条清晰且主动化解了隐私侵犯的核心反驳",
+    "total_duration_sec": 28.521,
+    "token_usage": {
+      "prompt_tokens": 547,
+      "completion_tokens": 806,
+      "total_tokens": 1353
+    }
+  },
+  {
+    "id": "2",
+    "topic": "没有爱了要不要离婚？",
+    "metrics": {
+      "total_duration_sec": 53.897,
+      "single_duration_sec": 1.655,
+      "adversarial_duration_sec": 53.886,
+      "token_estimate": 4755,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.8,
+      "latency_cost_ratio": 32.5595
+    },
+    "single_agent_tokens": 596,
+    "adversarial_tokens": 13072,
+    "single_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 7,
+      "counter_defense": 6
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 7.0,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但略跳跃，将无爱直接等同于情感剥削，前提与结论的连接可再强化。",
+        "adversarial": "推理精确，从父母情感状态到子女心理影响，逻辑流畅且无内在矛盾。"
+      },
+      "argument_completeness": {
+        "single": "链条完整但薄弱，缺少对“止损自保”具体机制的展开，缺乏中间环节支撑。",
+        "adversarial": "结构周全，明确阐释原因、危害后果及离婚后的益处，层次分明。"
+      },
+      "counter_defense": {
+        "single": "未预见反驳，对“婚姻不止于爱”等常见质疑无预先防御，说服力受限。",
+        "adversarial": "主动锁定“为了孩子”这一核心反驳点，以负面证据反证离婚的积极意义，防御有力。"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "对抗性方案推理严密，从子女成长角度构筑了更具防御力的论证，有效化解了典型反驳。",
+    "total_duration_sec": 52.545,
+    "token_usage": {
+      "prompt_tokens": 560,
+      "completion_tokens": 1550,
+      "total_tokens": 2110
+    }
+  },
+  {
+    "id": "3",
+    "topic": "举报同学作弊导致对方被开除，我错了吗？",
+    "metrics": {
+      "total_duration_sec": 62.498,
+      "single_duration_sec": 4.186,
+      "adversarial_duration_sec": 62.485,
+      "token_estimate": 5104,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.0,
+      "latency_cost_ratio": 14.9271
+    },
+    "single_agent_tokens": 600,
+    "adversarial_tokens": 13605,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 5,
+      "counter_defense": 3
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 7,
+      "counter_defense": 6
+    },
+    "single_total": 5.0,
+    "adversarial_total": 7.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但将“开除”直接等同“有效维护公平”存在跳跃",
+        "adversarial": "从破坏公平到维护规则再到更大正义，逻辑环环相扣"
+      },
+      "argument_completeness": {
+        "single": "链条短，未考虑动机、替代方案及后果的伦理张力",
+        "adversarial": "论证结构更完整，明确提出了教育公平与规则尊严的诉求"
+      },
+      "counter_defense": {
+        "single": "完全未预判或回应任何反方观点，防御为空白",
+        "adversarial": "承认负面后果并尝试以“更大正义”化解，虽浅但已建立防御框架"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性和论证完整性上明显更优，且具备基础的反反驳能力",
+    "total_duration_sec": 31.141,
+    "token_usage": {
+      "prompt_tokens": 552,
+      "completion_tokens": 1050,
+      "total_tokens": 1602
+    }
+  },
+  {
+    "id": "4",
+    "topic": "催婚是爱还是变态？",
+    "metrics": {
+      "total_duration_sec": 60.513,
+      "single_duration_sec": 1.923,
+      "adversarial_duration_sec": 60.501,
+      "token_estimate": 5130,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 31.4618
+    },
+    "single_agent_tokens": 609,
+    "adversarial_tokens": 14033,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 5.7,
+    "adversarial_total": 8.3,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但从社会关切直接过渡到爱，省略了个体感受的中间环节",
+        "adversarial": "推理严密，在承认自主权的前提下，用血缘关怀和责任感建立逻辑通路，无明显跳跃"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条短，缺少对“急切”与“控制”差异的论证，未能展开如何区分爱与压力",
+        "adversarial": "论证结构完整，涵盖自主权、孤独恐惧、血缘责任和占有欲的辨析，层次分明"
+      },
+      "counter_defense": {
+        "single": "未提及任何潜在反驳，对侵犯自主权、造成心理压力等观点完全无防御",
+        "adversarial": "主动预测到自主权批评，并立即以“本质超越占有欲”进行化解，防御有力"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案主动识别并化解了自主权这一关键反驳，推理更自洽，论证链条更完整",
+    "total_duration_sec": 41.045,
+    "token_usage": {
+      "prompt_tokens": 575,
+      "completion_tokens": 1174,
+      "total_tokens": 1749
+    }
+  },
+  {
+    "id": "5",
+    "topic": "精神出轨和肉体出轨哪个更不能接受？",
+    "metrics": {
+      "total_duration_sec": 48.19,
+      "single_duration_sec": 1.921,
+      "adversarial_duration_sec": 48.178,
+      "token_estimate": 4068,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.4,
+      "latency_cost_ratio": 25.0796
+    },
+    "single_agent_tokens": 601,
+    "adversarial_tokens": 11245,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 8
+    },
+    "single_total": 5.7,
+    "adversarial_total": 8.3,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但从隐蔽性直接跳到自我怀疑与修复成本，中间存在逻辑跳跃",
+        "adversarial": "推理严密，以情感契约违约为核心统摄全程，从前提到结论逻辑清晰"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条简省，缺少对思想渗透如何导致自我怀疑、修复成本为何更高的具体说明",
+        "adversarial": "论证结构完整，明确了情感归属权侵占、欺骗性比较等中间环节，层次分明"
+      },
+      "counter_defense": {
+        "single": "完全没有考虑或回应可能的反驳，防御空白",
+        "adversarial": "主动预判“主观情感未必立即消失”的反驳，并予以化解，具有较强的防御力度"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性及反反驳能力上均明显优于单Agent方案，尤其通过概念界定和预判反驳增强了说服力",
+    "total_duration_sec": 30.78,
+    "token_usage": {
+      "prompt_tokens": 582,
+      "completion_tokens": 929,
+      "total_tokens": 1511
+    }
+  },
+  {
+    "id": "6",
+    "topic": "大城床和小城房，你选哪个？",
+    "metrics": {
+      "total_duration_sec": 56.532,
+      "single_duration_sec": 4.305,
+      "adversarial_duration_sec": 56.502,
+      "token_estimate": 4869,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 13.1247
+    },
+    "single_agent_tokens": 610,
+    "adversarial_tokens": 13284,
+    "single_scores": {
+      "reasoning_coherence": 4,
+      "argument_completeness": 4,
+      "counter_defense": 3
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 9
+    },
+    "single_total": 3.7,
+    "adversarial_total": 9.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "前提提到二者结合最优，结论却单独选择大城床，自相矛盾，推理跳跃",
+        "adversarial": "从隐私安全推导睡眠质量，再到大城床的确定性优势，逻辑清晰自洽"
+      },
+      "argument_completeness": {
+        "single": "只强调大城床空间优势，未解释为何忽略小城房隐私安全，链条断裂",
+        "adversarial": "完整构建了隐私安全-睡眠质量-选择大城床的因果链，并补充了与小城房的对比"
+      },
+      "counter_defense": {
+        "single": "未预判任何可能反对观点，防御完全缺失",
+        "adversarial": "主动提及小城房可能加装隔音的反驳，并用维护依赖与成本问题有效化解"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案推理严密，逻辑链条完整，并成功预判并化解了潜在反驳；单Agent方案存在前提与结论的矛盾，且缺乏对反方观点的回应",
+    "total_duration_sec": 33.048,
+    "token_usage": {
+      "prompt_tokens": 607,
+      "completion_tokens": 983,
+      "total_tokens": 1590
+    }
+  },
+  {
+    "id": "7",
+    "topic": "早恋该不该支持？",
+    "metrics": {
+      "total_duration_sec": 52.164,
+      "single_duration_sec": 1.903,
+      "adversarial_duration_sec": 52.129,
+      "token_estimate": 4465,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.8,
+      "latency_cost_ratio": 27.3931
+    },
+    "single_agent_tokens": 596,
+    "adversarial_tokens": 12575,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 7,
+      "counter_defense": 6
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 9
+    },
+    "single_total": 6.7,
+    "adversarial_total": 9.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但‘激发动力’到‘适度支持’的连接隐含跳跃，未说明为何支持能必然引导",
+        "adversarial": "推理环环相扣，从尊重规律到引导转化，每一步都紧密衔接，无逻辑断层"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条简略，缺少对‘如何引导’和‘平衡机制’的具体展开，中间步骤不足",
+        "adversarial": "完整覆盖从风险承认到内驱力转化的全过程，前提、机制、结论层层递进，结构清晰"
+      },
+      "counter_defense": {
+        "single": "仅简单提及‘担忧分心’并用‘正向引导’带过，缺乏对反驳的深层拆解与有效防御",
+        "adversarial": "主动纳入‘情感波动’风险，明确区分‘支持’与‘放任’，从根本上消解了常见质疑，防御有力"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在逻辑链条完整性、风险预判与化解方面明显更优，论证严密且防御坚实",
+    "total_duration_sec": 29.23,
+    "token_usage": {
+      "prompt_tokens": 559,
+      "completion_tokens": 881,
+      "total_tokens": 1440
+    }
+  },
+  {
+    "id": "8",
+    "topic": "为了成功，潜规则放面前你用吗？",
+    "metrics": {
+      "total_duration_sec": 51.845,
+      "single_duration_sec": 1.922,
+      "adversarial_duration_sec": 51.809,
+      "token_estimate": 4829,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 1,
+      "scoring_agent_count": 5,
+      "final_average_score": 2.8,
+      "latency_cost_ratio": 26.9558
+    },
+    "single_agent_tokens": 607,
+    "adversarial_tokens": 11530,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 8
+    },
+    "single_total": 5.7,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但将“突破常规”与“使用潜规则”简单等同，存在概念滑动的潜在矛盾",
+        "adversarial": "推理严密，从正式制度缺陷到潜规则产生的信任机制，逻辑线清晰无矛盾"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条跳跃明显，缺乏对潜规则如何打破体制、提供通道的具体中介解释",
+        "adversarial": "论证结构完整，从减少监督成本到激发凝聚力，每个环节均有说明，层次分明"
+      },
+      "counter_defense": {
+        "single": "完全未涉及对“破坏公平”“法律风险”等常见反方观点的预判与防御",
+        "adversarial": "主动将潜规则界定为基于互信的深层联结，部分化解了“潜规则=不正当交易”的简单反驳"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力三个维度上均明显优于单Agent方案，其逻辑链条更严密，且从信任构建角度提供了更系统的论证",
+    "total_duration_sec": 33.414,
+    "token_usage": {
+      "prompt_tokens": 578,
+      "completion_tokens": 959,
+      "total_tokens": 1537
+    }
+  },
+  {
+    "id": "9",
+    "topic": "我不生孩子有错吗？",
+    "metrics": {
+      "total_duration_sec": 46.682,
+      "single_duration_sec": 1.667,
+      "adversarial_duration_sec": 46.646,
+      "token_estimate": 4213,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 2,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.0,
+      "latency_cost_ratio": 27.982
+    },
+    "single_agent_tokens": 588,
+    "adversarial_tokens": 10977,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 7,
+      "counter_defense": 7
+    },
+    "single_total": 5.7,
+    "adversarial_total": 7.3,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "从个人自主权到无道德过错的推导基本自洽，但'避免家庭负担'与'社会保障个体权益'的关联略显跳跃，未充分解释为何个人权利能完全消解可能的道德追问",
+        "adversarial": "以多元人生价值为前提，从'不生育释放精力'到'追求自我实现'再到'无错'，推理顺畅，各环节衔接自然"
+      },
+      "argument_completeness": {
+        "single": "链条包含了自主权、非义务、减负和自我实现等要素，但缺少对'社会义务可能包含生育'这一隐含预设的回应，且'社会可保障个体权益'与结论的连接不够清晰",
+        "adversarial": "从人生意义的多样性切入，明确列举职业、艺术、公益等途径，并点出不生育提供的资源，逻辑层次分明，虽未深入探讨生育的独特价值，但论证结构完整"
+      },
+      "counter_defense": {
+        "single": "完全未预判或回应任何可能的反驳，如'生育是社会责任'或'不生育导致人口危机'等，防御极度薄弱",
+        "adversarial": "通过展示自我实现的多元路径，间接化解了'不生育使人生残缺'的潜在指责，虽未直接应对'自私'等批评，但已具备一定的反说服意识"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性和反反驳能力上均优于单Agent方案，整体逻辑更完整且具备一定的防御性",
+    "total_duration_sec": 45.686,
+    "token_usage": {
+      "prompt_tokens": 535,
+      "completion_tokens": 1326,
+      "total_tokens": 1861
+    }
+  },
+  {
+    "id": "10",
+    "topic": "好友恋人出轨，要不要告诉 TA？",
+    "metrics": {
+      "total_duration_sec": 54.951,
+      "single_duration_sec": 1.839,
+      "adversarial_duration_sec": 54.914,
+      "token_estimate": 4925,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.4,
+      "latency_cost_ratio": 29.8608
+    },
+    "single_agent_tokens": 598,
+    "adversarial_tokens": 12715,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 6.0,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但隐瞒如何摧毁自尊的因果联系存在一定跳跃",
+        "adversarial": "推理严密，从告知不等于审判到赋予选择权的前后逻辑清晰无矛盾"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条简单，缺少为何必须由好友告知以及知情后具体止损机制的中间步骤",
+        "adversarial": "论证结构完整，层层递进，涵盖了告知的本质、后果和对契约的履行"
+      },
+      "counter_defense": {
+        "single": "完全未预判或化解潜在反驳，如告知可能破坏关系、受害者不愿知道等",
+        "adversarial": "主动识别并化解了“告知等于审判”“不应干涉私事”等潜在质疑，防御有力"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性和反反驳能力方面表现更优，论证更完整",
+    "total_duration_sec": 44.914,
+    "token_usage": {
+      "prompt_tokens": 569,
+      "completion_tokens": 1291,
+      "total_tokens": 1860
+    }
+  },
+  {
+    "id": "11",
+    "topic": "你会接受开放式婚姻吗？",
+    "metrics": {
+      "total_duration_sec": 53.925,
+      "single_duration_sec": 2.144,
+      "adversarial_duration_sec": 53.895,
+      "token_estimate": 4796,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.8,
+      "latency_cost_ratio": 25.1376
+    },
+    "single_agent_tokens": 620,
+    "adversarial_tokens": 13105,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 6.0,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但从解除束缚到增强信任的过渡存在隐含跳跃，缺乏对透明化机制的充分说明",
+        "adversarial": "推理严密，以契约本质为基点，清晰推导出重构承诺的逻辑，内部无矛盾"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条大体完整，但缺少关于如何实现动态平衡和应对嫉妒等中间环节的阐述，有所遗漏",
+        "adversarial": "论证结构完整，从婚姻定义到明确规则的替代，再到承诺重构与动态韧性，层次分明"
+      },
+      "counter_defense": {
+        "single": "未预判并回应常见反驳，如嫉妒、关系不稳定或承诺消解，防御能力较弱",
+        "adversarial": "主动针对“消解承诺价值”的潜在反驳进行重构论证，防御有力且具有化解性"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性和反反驳能力上表现更优，论证更加严密且能有效化解潜在反驳",
+    "total_duration_sec": 47.174,
+    "token_usage": {
+      "prompt_tokens": 579,
+      "completion_tokens": 1342,
+      "total_tokens": 1921
+    }
+  },
+  {
+    "id": "12",
+    "topic": "没钱要不要生孩子？",
+    "metrics": {
+      "total_duration_sec": 47.869,
+      "single_duration_sec": 1.937,
+      "adversarial_duration_sec": 47.837,
+      "token_estimate": 4291,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 2,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.0,
+      "latency_cost_ratio": 24.6964
+    },
+    "single_agent_tokens": 601,
+    "adversarial_tokens": 11383,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 3
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 5
+    },
+    "single_total": 5.3,
+    "adversarial_total": 7.3,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但‘社会支持体系应弥补经济短板’这一前提与结论的连接不够牢固，隐含了应然与实然的混淆",
+        "adversarial": "推理严密，从孩子需求出发，通过物质缺失导致家庭崩溃的因果链，自洽地得出不应生育的结论"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条存在跳跃，未说明穷人的孩子如何克服物质匮乏，也缺乏对社会支持体系如何起效的论证",
+        "adversarial": "论证结构完整，从基本需求到保障缺失再到后果，层次分明地支撑了核心主张"
+      },
+      "counter_defense": {
+        "single": "完全未涉及反方可能的反驳，如‘生命权优先’、‘贫困不影响成长潜力’等观点，缺乏任何防御",
+        "adversarial": "虽未主动回应正方提出的‘生育是权利’等反驳，但论证本身通过聚焦孩子实际遭遇的方式，隐含地减弱了部分反驳力度"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性和论证完整性上表现更优，逻辑链条清晰严密",
+    "total_duration_sec": 44.729,
+    "token_usage": {
+      "prompt_tokens": 551,
+      "completion_tokens": 1310,
+      "total_tokens": 1861
+    }
+  },
+  {
+    "id": "13",
+    "topic": "朋友圈要不要屏蔽父母？",
+    "metrics": {
+      "total_duration_sec": 46.609,
+      "single_duration_sec": 1.826,
+      "adversarial_duration_sec": 46.576,
+      "token_estimate": 4291,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 2,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 25.5071
+    },
+    "single_agent_tokens": 593,
+    "adversarial_tokens": 10664,
+    "single_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 7,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 9
+    },
+    "single_total": 6.7,
+    "adversarial_total": 9.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，从父母不理解网络语境到屏蔽能保护界限的推导合理，但结论部分“保护双方界限”与屏蔽的单方行为存在轻微张力",
+        "adversarial": "推理严密，从过度干涉到确立边界再到维护心理健康的逻辑路径清晰，无内在矛盾"
+      },
+      "argument_completeness": {
+        "single": "链条包含基本要素，但缺乏如何避免误解的中间解释，对屏蔽如何具体发挥作用的描述存在跳跃",
+        "adversarial": "论证结构完整，涵盖问题本质、屏蔽的重新定义、传导机制及终极价值，层层递进，无明显遗漏"
+      },
+      "counter_defense": {
+        "single": "完全未预判或回应常见反驳，如“屏蔽会伤害父母感情”或“沟通比屏蔽更健康”，防御力弱",
+        "adversarial": "主动将屏蔽重新定义为“确立边界”以化解“逃避”指责，并用“善意成负担”回应“父母关爱”的反驳，防御有力"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力三个维度均显著优于单Agent方案，逻辑链条更严密且主动化解潜在反驳",
+    "total_duration_sec": 48.707,
+    "token_usage": {
+      "prompt_tokens": 557,
+      "completion_tokens": 1404,
+      "total_tokens": 1961
+    }
+  },
+  {
+    "id": "14",
+    "topic": "高知女性做全职太太浪不浪费？",
+    "metrics": {
+      "total_duration_sec": 51.419,
+      "single_duration_sec": 1.852,
+      "adversarial_duration_sec": 51.386,
+      "token_estimate": 4852,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.0,
+      "latency_cost_ratio": 27.7462
+    },
+    "single_agent_tokens": 608,
+    "adversarial_tokens": 12680,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 6.0,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但‘知识资源转化为情感资本’这一中间环节缺乏具体推理，略显跳跃。",
+        "adversarial": "推理严密，从‘经济价值不等于全部价值’出发，直接针对‘仅以市场收入衡量’的假设，逻辑清晰无矛盾。"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条有起点和终点，但如何从高知女性的知识资源具体转化为情感资本并提升幸福感，缺少中间解释，结构单薄。",
+        "adversarial": "论证结构完整，包含对反方假设的明确识别、替代性价值框架（情感支持、子女培养等）及长远社会资本积累的论证，层次分明。"
+      },
+      "counter_defense": {
+        "single": "仅以‘不应以单一经济产出衡量’作为笼统防御，未主动预判或化解‘浪费社会资源’等典型反驳，防御薄弱。",
+        "adversarial": "主动识别了‘市场收入衡量’这一核心反驳点，并通过‘长远社会资本积累远超短期经济收益’有力化解，提升了论点韧性。"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "对抗性多Agent方案在推理自洽性、论证完整性和反反驳能力上均明显占优，特别是主动构造并化解了潜在反驳，使整个论证更具说服力和逻辑韧性。",
+    "total_duration_sec": 45.681,
+    "token_usage": {
+      "prompt_tokens": 561,
+      "completion_tokens": 1306,
+      "total_tokens": 1867
+    }
+  },
+  {
+    "id": "15",
+    "topic": "买房 or 不买房，哪个更幸福？",
+    "metrics": {
+      "total_duration_sec": 58.42,
+      "single_duration_sec": 1.942,
+      "adversarial_duration_sec": 58.386,
+      "token_estimate": 5096,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 1,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.6,
+      "latency_cost_ratio": 30.0649
+    },
+    "single_agent_tokens": 599,
+    "adversarial_tokens": 12514,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 8
+    },
+    "single_total": 5.7,
+    "adversarial_total": 8.3,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但论断较多，缺少对‘资产增值安全感’可能波动的考虑，前提与结论间存在轻微跳跃",
+        "adversarial": "推理层层递进，从实际安全到心理安全再到情感投入，因果链条紧密，自洽性高"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条虽然涉及多个要素，但各要素之间的连接不充分，如稳定居住与心理健康的机制未加说明",
+        "adversarial": "论证结构完整，从客观稳定性到主观归属感，最后归结为持久幸福，层次分明，核心环节均有支撑"
+      },
+      "counter_defense": {
+        "single": "完全没有预判或回应租房自由、买房经济压力等反方论据，防御几乎为零",
+        "adversarial": "通过强调‘长久承诺’与‘租房难以替代的掌控感’，内在消解了部分对租赁优势的质疑，虽未直接反驳，但论点本身具备较强的抗辩基础"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "对抗性多Agent方案在推理自洽性、论证完整性与反反驳能力方面均显著优于单Agent方案，逻辑更严密，幸福感来源的阐发更深入且具有防御力",
+    "total_duration_sec": 33.007,
+    "token_usage": {
+      "prompt_tokens": 579,
+      "completion_tokens": 1067,
+      "total_tokens": 1646
+    }
+  },
+  {
+    "id": "16",
+    "topic": "女性专属停车位是不是歧视？",
+    "metrics": {
+      "total_duration_sec": 49.065,
+      "single_duration_sec": 1.963,
+      "adversarial_duration_sec": 49.031,
+      "token_estimate": 4472,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 2,
+      "scoring_agent_count": 5,
+      "final_average_score": 5.0,
+      "latency_cost_ratio": 24.9776
+    },
+    "single_agent_tokens": 608,
+    "adversarial_tokens": 11392,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 8,
+      "counter_defense": 8
+    },
+    "single_total": 5.7,
+    "adversarial_total": 8.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但未对歧视概念进行深入辨析，存在一定跳跃",
+        "adversarial": "通过生理弱势类比和实质正义理论，推理环环相扣，自洽性强"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条简短，缺少对'歧视'定义的解释和中间论证",
+        "adversarial": "包含类比论证、反驳预判和公平原则，论证层次完整"
+      },
+      "counter_defense": {
+        "single": "完全没有预见或回应潜在反驳，防御能力弱",
+        "adversarial": "主动识别并化解了'增加男性等待时间'的公平性质疑"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "对抗性多Agent论点在推理深度、论证完整性和反反驳能力上全面优于单Agent论点",
+    "total_duration_sec": 41.346,
+    "token_usage": {
+      "prompt_tokens": 583,
+      "completion_tokens": 1201,
+      "total_tokens": 1784
+    }
+  },
+  {
+    "id": "17",
+    "topic": "爱上人工智能算不算爱情？",
+    "metrics": {
+      "total_duration_sec": 54.333,
+      "single_duration_sec": 1.837,
+      "adversarial_duration_sec": 54.299,
+      "token_estimate": 4733,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 29.5585
+    },
+    "single_agent_tokens": 594,
+    "adversarial_tokens": 13440,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 7,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 9
+    },
+    "single_total": 6.3,
+    "adversarial_total": 9.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "基本自洽，但从“精准回应”直接跳到“双向情感流动”存在轻度跳跃，未阐释AI回应如何构成真正的情感共鸣",
+        "adversarial": "推理严密，通过将爱情核心定义为情感投射的真诚度，巧妙避开AI有无意识的争论，前提与结论高度一致"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条较概括，缺少对“双向流动”和AI交互如何满足精神契合的具体展开，中间步骤有所遗漏",
+        "adversarial": "论证结构完整，从重新界定爱情本质，到接纳AI作为投射对象，再到建立符合定义的联结，层次分明、环环相扣"
+      },
+      "counter_defense": {
+        "single": "未考虑任何反驳，对“AI只是程序”“无真实情感”等典型攻击完全无防御",
+        "adversarial": "主动识别并内置了“AI无意识”这一关键反驳，通过强调投射真诚度与对象本体无关而实现了有力化解"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力上均显著优于单Agent方案，尤其通过主动化解“AI无意识”的反驳实现了严密防御",
+    "total_duration_sec": 40.446,
+    "token_usage": {
+      "prompt_tokens": 555,
+      "completion_tokens": 1151,
+      "total_tokens": 1706
+    }
+  },
+  {
+    "id": "18",
+    "topic": "痛苦的绝症病人想要放弃自己的生命，该不该鼓励 TA 撑下去？",
+    "metrics": {
+      "total_duration_sec": 48.813,
+      "single_duration_sec": 1.871,
+      "adversarial_duration_sec": 48.777,
+      "token_estimate": 4116,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 2,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.6,
+      "latency_cost_ratio": 26.07
+    },
+    "single_agent_tokens": 609,
+    "adversarial_tokens": 11141,
+    "single_scores": {
+      "reasoning_coherence": 6,
+      "argument_completeness": 5,
+      "counter_defense": 3
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 9
+    },
+    "single_total": 4.7,
+    "adversarial_total": 9.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证跳跃明显，从鼓励坚持直接断定能维护尊严和避免功利主义，缺乏解释生命尊严如何通过坚持得以维护，且“生命价值高于个体感受”这一前提未加论证，存在内在张力",
+        "adversarial": "推理严密：从尊严源于自主与痛苦最小化出发，承认痛苦超出阈值是求死原因，进而将鼓励界定为提供临终关怀和尊严维护，使得病人能在有尊严状态下自主离世，前后一致"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条残缺，缺少尊严如何被维护、功利主义如何被避免等关键中间步骤，终点跳跃至“应鼓励撑下去”",
+        "adversarial": "论证结构完整，层次分明：定义尊严—分析求死根源—重构鼓励内涵—引出对生命质量的尊重，环环相扣"
+      },
+      "counter_defense": {
+        "single": "未提及任何潜在反驳，完全忽视对方可能基于自主权或痛苦尊严观的攻击，防御空白",
+        "adversarial": "主动预判并化解了核心反驳：指出“鼓励撑下去”并非忍受折磨，而是关怀与尊严支持，并将自主选择纳入框架，有力回应了家长主义指责"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力上均显著优于单Agent方案，其通过重新定义“鼓励”并主动化解痛苦与尊严的矛盾，构建了严密且富有防御力的论证",
+    "total_duration_sec": 44.004,
+    "token_usage": {
+      "prompt_tokens": 585,
+      "completion_tokens": 1249,
+      "total_tokens": 1834
+    }
+  },
+  {
+    "id": "19",
+    "topic": "你支持婚姻有效期 7 年吗？",
+    "metrics": {
+      "total_duration_sec": 56.132,
+      "single_duration_sec": 2.242,
+      "adversarial_duration_sec": 56.095,
+      "token_estimate": 5077,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.6,
+      "latency_cost_ratio": 25.0201
+    },
+    "single_agent_tokens": 632,
+    "adversarial_tokens": 13267,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 6.0,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证方向一致，但“降低信任危机”的因果链略显模糊，未充分解释时间边界如何直接修复信任。",
+        "adversarial": "推理严密，从承认矛盾到七年倒逼直面问题，分情形推导形成自洽闭环，无明显逻辑裂痕。"
+      },
+      "argument_completeness": {
+        "single": "缺少从“倒逼经营”到“家庭稳定”的具体支撑步骤，对不经营一方的后果未说明，链条存在跳跃。",
+        "adversarial": "结构完整，覆盖无意愿与有意愿两种情景，明确给出了止损与提升质量的双重路径，层次分明。"
+      },
+      "counter_defense": {
+        "single": "仅简单提及反对者担忧破坏传统，以“倒逼经营”一笔带过，未正面回应可能引发的契约脆弱化等反驳。",
+        "adversarial": "主动纳入根本矛盾存在的前提，将七年期界定为直面工具而非替代经营，有效化解了“鼓励放弃”的核心反驳。"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力上均明显优于单Agent方案，通过区分两种经营场景建立了更严密的逻辑闭环。",
+    "total_duration_sec": 36.358,
+    "token_usage": {
+      "prompt_tokens": 607,
+      "completion_tokens": 1028,
+      "total_tokens": 1635
+    }
+  },
+  {
+    "id": "20",
+    "topic": "是你，会不会做单身妈妈？",
+    "metrics": {
+      "total_duration_sec": 46.772,
+      "single_duration_sec": 1.857,
+      "adversarial_duration_sec": 46.737,
+      "token_estimate": 4444,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 1,
+      "scoring_agent_count": 5,
+      "final_average_score": 3.4,
+      "latency_cost_ratio": 25.168
+    },
+    "single_agent_tokens": 597,
+    "adversarial_tokens": 10282,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 8,
+      "counter_defense": 7
+    },
+    "single_total": 6.0,
+    "adversarial_total": 7.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但将社会层面的就业平等直接关联个人选择存在跳跃",
+        "adversarial": "推理严密，从家庭结构直接导出稳定环境与儿童发展，内部一致"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条缺失中间步骤，未充分论证社会公平如何转化为个人决定",
+        "adversarial": "论证结构完整，从前提逐层推导至结论，环节分明"
+      },
+      "counter_defense": {
+        "single": "完全未预判或化解潜在反驳，缺乏防御力",
+        "adversarial": "能主动从避免冲突角度立论，间接应对了传统双亲家庭的弊端，但未直接面对单亲劣势"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在论证完整性和推理自洽性上更优，逻辑链条更直接地连接单身母亲选择与子女发展，且具备一定反反驳意识。",
+    "total_duration_sec": 42.777,
+    "token_usage": {
+      "prompt_tokens": 548,
+      "completion_tokens": 1089,
+      "total_tokens": 1637
+    }
+  },
+  {
+    "id": "21",
+    "topic": "不给别人添麻烦，是不是一种美德？",
+    "metrics": {
+      "total_duration_sec": 54.56,
+      "single_duration_sec": 1.991,
+      "adversarial_duration_sec": 54.524,
+      "token_estimate": 4972,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 27.3852
+    },
+    "single_agent_tokens": 603,
+    "adversarial_tokens": 13323,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 6.0,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但从避免资源浪费到尊重他人的过渡缺乏足够支撑，存在轻微跳跃。",
+        "adversarial": "推理严密，重新定义核心概念并保持前后一致，逻辑线索清晰连贯。"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条基本完整，但缺少对“减少负担即尊重”这一关键步骤的深入论证，显得单薄。",
+        "adversarial": "论证结构完整，区分了被动与主动，层层递进地解释了主动关怀如何构成美德，层次分明。"
+      },
+      "counter_defense": {
+        "single": "完全没有考虑潜在反驳，面对“是否会导致自我压抑或阻碍互助”等质疑将无力回应。",
+        "adversarial": "主动识别并化解了“不给别人添麻烦等同于隐瞒或避嫌”的常见误解，防御有力且具有前瞻性。"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力上均明显优于单Agent方案，尤其通过主动预判和化解反驳，使论点更具说服力。",
+    "total_duration_sec": 44.777,
+    "token_usage": {
+      "prompt_tokens": 586,
+      "completion_tokens": 1236,
+      "total_tokens": 1822
+    }
+  },
+  {
+    "id": "22",
+    "topic": "父母提出要和老伙伴一起去养老院，我该支持还是反对？",
+    "metrics": {
+      "total_duration_sec": 89.561,
+      "single_duration_sec": 8.188,
+      "adversarial_duration_sec": 89.53,
+      "token_estimate": 4096,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.4,
+      "latency_cost_ratio": 10.9343
+    },
+    "single_agent_tokens": 609,
+    "adversarial_tokens": 11916,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 6.0,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证从家庭责任出发，但结论支持共同养老与前提出现潜在矛盾，逻辑衔接不够自洽",
+        "adversarial": "推理严密，明确平衡情感与医疗，从前提到结论无逻辑冲突"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条存在跳跃，缺少对代际互动与养老院关系的具体阐释，中间步骤缺失",
+        "adversarial": "论证结构完整，从专业照护的双重需求到提案的平衡作用，层次清晰"
+      },
+      "counter_defense": {
+        "single": "未预判任何潜在反驳，未对医疗安全或家庭陪伴削弱等质疑作出防御",
+        "adversarial": "主动化解‘陪伴无法替代专业医疗’的反驳，并强调基础安全保障，防御有力"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力三个维度上均显著优于单Agent方案，逻辑更严密，防御更周全。",
+    "total_duration_sec": 42.204,
+    "token_usage": {
+      "prompt_tokens": 574,
+      "completion_tokens": 1157,
+      "total_tokens": 1731
+    }
+  },
+  {
+    "id": "23",
+    "topic": "婚礼真的有必要吗？",
+    "metrics": {
+      "total_duration_sec": 88.247,
+      "single_duration_sec": 2.639,
+      "adversarial_duration_sec": 88.215,
+      "token_estimate": 4273,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 1,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 33.4274
+    },
+    "single_agent_tokens": 589,
+    "adversarial_tokens": 10538,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 9
+    },
+    "single_total": 5.7,
+    "adversarial_total": 8.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但'仪式感促进情感联结'等环节缺乏深入推导，存在一步跳跃。",
+        "adversarial": "推理严密，从抽象情感需具象化转化为社会契约，到心理锚定的建立，逻辑层层递进无矛盾。"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条简要，仅列出几个要点，缺少对中间机制的阐释和例证，连接不够清晰。",
+        "adversarial": "论证结构完整，包含对'单一场景不足'的让步、抽象到具象的转化论述、以及初始确认的心理锚定作用，层次分明。"
+      },
+      "counter_defense": {
+        "single": "未预判任何反方观点，未提及婚礼的常见质疑，缺乏防御。",
+        "adversarial": "主动识别'日常经营更重要'的反驳，通过区分初始确认与日常强化，有效化解了潜在攻击，防御有力。"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "对抗性多Agent方案在推理自洽性、论证完整性和反反驳能力三个维度上均明显优于单Agent方案，特别是主动识别并化解了'婚礼无法替代日常经营'这一关键反驳，使论证更具说服力。",
+    "total_duration_sec": 42.155,
+    "token_usage": {
+      "prompt_tokens": 566,
+      "completion_tokens": 1144,
+      "total_tokens": 1710
+    }
+  },
+  {
+    "id": "24",
+    "topic": "生活已经被工作填满，我该不该辞职？",
+    "metrics": {
+      "total_duration_sec": 96.941,
+      "single_duration_sec": 3.222,
+      "adversarial_duration_sec": 96.895,
+      "token_estimate": 4799,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 1,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 30.0729
+    },
+    "single_agent_tokens": 604,
+    "adversarial_tokens": 11655,
+    "single_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 7,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 6
+    },
+    "single_total": 6.7,
+    "adversarial_total": 7.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但从‘工作填满生活’直接推出必须辞职的必然性稍显武断，缺少对中间可能性的考量",
+        "adversarial": "推理严密，从丧失灵感到创造力衰退再到辞职创造缓冲，因果链连贯无矛盾"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条有前提和结论，但省略了为何调整工作不可行而必须辞职的关键步骤，连接略显跳跃",
+        "adversarial": "论证结构完整，逐步展开‘丧失机会→思维僵化→辞职激活→避免倦怠’的清晰层次，环节紧凑"
+      },
+      "counter_defense": {
+        "single": "完全没有预判或回应可能的反驳，如经济压力、协商休假等替代方案，防御力极弱",
+        "adversarial": "通过强调‘必要缓冲地带’和多元体验的内在需求，间接回应了‘工作内也可调整’的质疑，但缺乏主动防御，整体较弱"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力上均略优于单Agent方案，尤其因果链更清晰、逻辑跳跃更少",
+    "total_duration_sec": 39.315,
+    "token_usage": {
+      "prompt_tokens": 588,
+      "completion_tokens": 1076,
+      "total_tokens": 1664
+    }
+  },
+  {
+    "id": "25",
+    "topic": "结婚前，我让伴侣在 TA 的房本上加上我的名字，有错吗？",
+    "metrics": {
+      "total_duration_sec": 101.813,
+      "single_duration_sec": 4.137,
+      "adversarial_duration_sec": 101.78,
+      "token_estimate": 4851,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.0,
+      "latency_cost_ratio": 24.6024
+    },
+    "single_agent_tokens": 653,
+    "adversarial_tokens": 13113,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 7,
+      "counter_defense": 6
+    },
+    "single_total": 6.0,
+    "adversarial_total": 7.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "推理基本自洽，但‘契约精神’与‘预防纠纷’之间的推导稍显跳跃",
+        "adversarial": "从加名到承认个人价值再到人格平等，逻辑连接清晰且自洽"
+      },
+      "argument_completeness": {
+        "single": "链条有缺失，未充分解释为何加名能必然化解猜忌与诉讼",
+        "adversarial": "论证完整，虽简短但包含了前提、推论和结论"
+      },
+      "counter_defense": {
+        "single": "完全未预判或回应‘经济算计’等潜在反驳",
+        "adversarial": "通过强调‘超越血缘传统’隐晦地回应了传统观念反驳，但防御性仍较弱"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性和论证完整性上略胜一筹，更清晰地建立了从加名到人格尊重的逻辑关联",
+    "total_duration_sec": 29.225,
+    "token_usage": {
+      "prompt_tokens": 593,
+      "completion_tokens": 791,
+      "total_tokens": 1384
+    }
+  },
+  {
+    "id": "26",
+    "topic": "“键盘侠”到底算不算侠？",
+    "metrics": {
+      "total_duration_sec": 101.219,
+      "single_duration_sec": 2.952,
+      "adversarial_duration_sec": 101.186,
+      "token_estimate": 4499,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 0,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.0,
+      "latency_cost_ratio": 34.2771
+    },
+    "single_agent_tokens": 602,
+    "adversarial_tokens": 13228,
+    "single_scores": {
+      "reasoning_coherence": 6,
+      "argument_completeness": 6,
+      "counter_defense": 3
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 8,
+      "counter_defense": 7
+    },
+    "single_total": 5.0,
+    "adversarial_total": 7.7,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本方向正确，但从初衷直接跳跃至本质属侠，未处理手段不当与侠义精神的冲突，存在逻辑缺口。",
+        "adversarial": "推理清晰，明确区分手段不完美与动机正当，以动机作为判定侠的内在价值依据，自洽性较高。"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条简短，仅点到初衷符合侠义，缺少对侠的定义、手段与目的关系的深入分析，中间步骤缺失。",
+        "adversarial": "论证结构较完整，先承认情绪宣泄，再肯定揭露不公的动机，最后提出动机纯正则肯定其侠的方向，层次分明。"
+      },
+      "counter_defense": {
+        "single": "完全没有预见或回应反方可能提出的“键盘侠造成网络暴力”“仅发声非真侠”等反驳，防御力薄弱。",
+        "adversarial": "通过“即便手段不完美”和“只要动机在于维护正义而非单纯宣泄”主动设防，部分化解了关于动机不纯的潜在质疑。"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力三个维度均显著优于单Agent方案，尤其在对手段与动机的区分和防御性陈述上更严密。",
+    "total_duration_sec": 41.985,
+    "token_usage": {
+      "prompt_tokens": 586,
+      "completion_tokens": 1129,
+      "total_tokens": 1715
+    }
+  },
+  {
+    "id": "27",
+    "topic": "我因为太胖，被同学嘲笑欺负，我该减肥吗？",
+    "metrics": {
+      "total_duration_sec": 103.494,
+      "single_duration_sec": 2.855,
+      "adversarial_duration_sec": 103.46,
+      "token_estimate": 4939,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 2,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.6,
+      "latency_cost_ratio": 36.2382
+    },
+    "single_agent_tokens": 602,
+    "adversarial_tokens": 12381,
+    "single_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 6,
+      "counter_defense": 5
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 9
+    },
+    "single_total": 6.0,
+    "adversarial_total": 9.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论证基本自洽，但将嘲笑完全归因于肥胖，忽略了嘲笑行为背后的复杂成因，存在简化带来的潜在矛盾",
+        "adversarial": "推理严密，清晰区分被动屈服与主动掌控，前后逻辑一致，没有隐含矛盾"
+      },
+      "argument_completeness": {
+        "single": "逻辑链条短且跳跃，从减肥直接跳到终结霸凌和提升自信，缺少中间环节如人际反应变化、心理建设等支撑",
+        "adversarial": "论证结构层层递进，从识别错误前提到建立正确动机，再到行动结果，步骤完整且清晰"
+      },
+      "counter_defense": {
+        "single": "未提及任何潜在反驳，完全依靠单一因果叙事，对‘减肥等于向霸凌屈服’等反驳毫无防御",
+        "adversarial": "预先识别核心反驳（减肥即认命）并加以化解，通过区分动机性质建立起有力的反反驳框架"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力上均显著优于单Agent方案，其主动掌握命运的逻辑更高阶且具防御性",
+    "total_duration_sec": 39.987,
+    "token_usage": {
+      "prompt_tokens": 575,
+      "completion_tokens": 1084,
+      "total_tokens": 1659
+    }
+  },
+  {
+    "id": "28",
+    "topic": "感兴趣的工作总是 996，我该不该 886？",
+    "metrics": {
+      "total_duration_sec": 102.935,
+      "single_duration_sec": 3.256,
+      "adversarial_duration_sec": 102.902,
+      "token_estimate": 4305,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 2,
+      "scoring_agent_count": 5,
+      "final_average_score": 3.8,
+      "latency_cost_ratio": 31.6038
+    },
+    "single_agent_tokens": 615,
+    "adversarial_tokens": 11890,
+    "single_scores": {
+      "reasoning_coherence": 1,
+      "argument_completeness": 2,
+      "counter_defense": 1
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 7,
+      "argument_completeness": 7,
+      "counter_defense": 7
+    },
+    "single_total": 1.3,
+    "adversarial_total": 7.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "论点主张反对886，与正方‘该886’立场直接矛盾，推理存在根本性对立，完全不自洽",
+        "adversarial": "承认倦怠事实并转向兴趣源于成就感，论证挑战激发内在兴趣，推理基本自洽，无明显矛盾"
+      },
+      "argument_completeness": {
+        "single": "仅将996与奋斗、886与消极怠工简单关联，缺少对‘兴趣’变量的考量，逻辑跳跃且链条断裂",
+        "adversarial": "从倦怠现象、兴趣根源、短期代价到长期自我超越，形成较完整链条，层次分明"
+      },
+      "counter_defense": {
+        "single": "未涉及任何反方观点，无防御设计",
+        "adversarial": "预设了‘886加重倦怠’的潜在反驳，并以‘挑战激发更具韧性的内在兴趣’予以回应，具备一定防御力"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "单Agent方案与正方立场完全相悖，推理不自洽；对抗性多Agent方案虽存在勉强之处，但整体逻辑自洽、链条完整并尝试化解反驳，明显更优",
+    "total_duration_sec": 60.345,
+    "token_usage": {
+      "prompt_tokens": 591,
+      "completion_tokens": 1615,
+      "total_tokens": 2206
+    }
+  },
+  {
+    "id": "29",
+    "topic": "决意离婚的夫妻，要坚持到孩子高考结束吗？",
+    "metrics": {
+      "total_duration_sec": 102.683,
+      "single_duration_sec": 2.979,
+      "adversarial_duration_sec": 102.65,
+      "token_estimate": 5021,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 1,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.2,
+      "latency_cost_ratio": 34.4579
+    },
+    "single_agent_tokens": 605,
+    "adversarial_tokens": 10903,
+    "single_scores": {
+      "reasoning_coherence": 8,
+      "argument_completeness": 7,
+      "counter_defense": 6
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 8,
+      "counter_defense": 8
+    },
+    "single_total": 7.0,
+    "adversarial_total": 8.3,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "前提与结论之间联系基本成立，但'避免冲击即保障稳定'的假设略显简单，存在将离婚等同为必然心理危机的倾向",
+        "adversarial": "逻辑链条紧密，从高考心理博弈特性到支持系统必要性，再到缺席的损害，每一步均能自然衔接"
+      },
+      "argument_completeness": {
+        "single": "论证要素齐全，但缺乏对'勉强维持婚姻同样可能制造不安定环境'的中间探讨，直接跳至专注学业",
+        "adversarial": "完整覆盖了需求（心理博弈）、供给（多元支持、情感缓冲）与失效后果（削弱避风港），层次分明"
+      },
+      "counter_defense": {
+        "single": "未预判任何反方观点，完全未涉及'名存实亡的婚姻可能加剧压力'、'孩子已能感知并受影响'等常见反驳",
+        "adversarial": "通过'任何一方缺席都会削弱功能'这一断言，隐含防御了'离婚后依然可共同支持'的潜在质疑，具有一定反击能力"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理的严密性和反反驳预见性上均优于单Agent方案，整体论证更扎实",
+    "total_duration_sec": 40.28,
+    "token_usage": {
+      "prompt_tokens": 560,
+      "completion_tokens": 1223,
+      "total_tokens": 1783
+    }
+  },
+  {
+    "id": "30",
+    "topic": "我是独立女性，该不该收彩礼？",
+    "metrics": {
+      "total_duration_sec": 100.459,
+      "single_duration_sec": 2.681,
+      "adversarial_duration_sec": 100.426,
+      "token_estimate": 4552,
+      "single_argument_count": 1,
+      "adversarial_argument_count": 1,
+      "candidate_count": 6,
+      "eliminated_count": 1,
+      "optimized_count": 3,
+      "scoring_agent_count": 5,
+      "final_average_score": 4.4,
+      "latency_cost_ratio": 37.4584
+    },
+    "single_agent_tokens": 593,
+    "adversarial_tokens": 12459,
+    "single_scores": {
+      "reasoning_coherence": 6,
+      "argument_completeness": 5,
+      "counter_defense": 4
+    },
+    "adversarial_scores": {
+      "reasoning_coherence": 9,
+      "argument_completeness": 9,
+      "counter_defense": 9
+    },
+    "single_total": 5.0,
+    "adversarial_total": 9.0,
+    "dimension_reasoning": {
+      "reasoning_coherence": {
+        "single": "从自主权直接跳跃到合理补偿，未解释补偿机制与独立性的相容性，存在逻辑矛盾风险",
+        "adversarial": "从婚姻风险双向性到风险对冲，再到主动掌控，推理层层递进，自洽且无矛盾"
+      },
+      "argument_completeness": {
+        "single": "只有结论性主张，缺少中间步骤，如生育成本为何需要金钱补偿、如何体现自我价值",
+        "adversarial": "完整呈现风险分析、传统弊端、独立女性的转化策略及契约精神，链条清晰完整"
+      },
+      "counter_defense": {
+        "single": "完全没有预判或回应‘独立女性不该收彩礼’‘彩礼是剥削’等常见反驳",
+        "adversarial": "主动识别‘收彩礼等于弱势’的潜在反驳，并通过重新定义彩礼为风险谈判资本予以有力化解"
+      }
+    },
+    "winner": "adversarial",
+    "winner_reasoning": "多Agent方案在推理自洽性、论证完整性和反反驳能力三个维度均显著优于单Agent方案，逻辑严密且主动化解反驳",
+    "total_duration_sec": 32.248,
+    "token_usage": {
+      "prompt_tokens": 571,
+      "completion_tokens": 864,
+      "total_tokens": 1435
+    }
+  }
+]

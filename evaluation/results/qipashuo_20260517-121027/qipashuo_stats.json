@@ -1,0 +1,20 @@
+{
+  "total_count": 30,
+  "single_wins": 0,
+  "adversarial_wins": 30,
+  "ties": 0,
+  "averages": {
+    "single": {
+      "reasoning_coherence": 6.7,
+      "argument_completeness": 5.87,
+      "counter_defense": 4.33,
+      "total": 5.64
+    },
+    "adversarial": {
+      "reasoning_coherence": 8.7,
+      "argument_completeness": 8.13,
+      "counter_defense": 8.1,
+      "total": 8.32
+    }
+  }
+}
