@@ -13,7 +13,6 @@
   --accent-soft: oklch(0.91 0.045 205);
   --good: oklch(0.53 0.12 155);
   --warn: oklch(0.62 0.13 65);
-  --multi-panel-height: 2460px;
   --workflow-round-gap: 28px;
   --round-scroll-buffer-size: 14px;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
@@ -233,10 +232,8 @@ select {
 }
 
 .strategy-panel.multi-panel {
-  height: var(--multi-panel-height);
-  max-height: var(--multi-panel-height);
-  min-height: var(--multi-panel-height);
-  overflow: hidden;
+  min-height: 420px;
+  overflow: visible;
 }
 
 .strategy-panel.multi-panel > .panel-heading,
@@ -298,10 +295,11 @@ select {
 
 .workflow-timeline {
   display: flex;
-  flex: 1;
+  flex: 0 1 auto;
   flex-direction: column;
   gap: var(--workflow-round-gap);
   min-height: 0;
+  max-height: calc(100vh - 260px);
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
@@ -774,12 +772,6 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .strategy-panel.multi-panel {
-    height: min(var(--multi-panel-height), calc(100vh - 140px));
-    max-height: min(var(--multi-panel-height), calc(100vh - 140px));
-    min-height: min(var(--multi-panel-height), calc(100vh - 140px));
-  }
-
   .primary-button {
     grid-column: 1 / -1;
   }
@@ -798,14 +790,11 @@ select {
   }
 
   :root {
-    --multi-panel-height: 1800px;
     --workflow-round-gap: 22px;
   }
 
-  .strategy-panel.multi-panel {
-    height: min(var(--multi-panel-height), calc(100vh - 120px));
-    max-height: min(var(--multi-panel-height), calc(100vh - 120px));
-    min-height: min(420px, calc(100vh - 120px));
+  .workflow-timeline {
+    max-height: calc(100vh - 220px);
   }
 
   h1 {

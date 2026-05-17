@@ -34,7 +34,7 @@ from backend.app.models import (
 EventCallback = Callable[[str, dict], Awaitable[None]]
 
 
-CACHE_VERSION = "v14-single-aligned-prompts"
+CACHE_VERSION = "v16-clean-scoring-output"
 OPPOSITION_AGENT_COUNT = 5
 SCORING_AGENT_COUNT = 5
 
@@ -121,7 +121,6 @@ class DebateOrchestrator:
                 },
             )
 
-        await emit("stage", {"stage": "final", "message": "Loaded cached multi-agent final result"})
         await emit("agent", {"stage": "final", **result.adversarial.model_dump()})
         await emit("final", result.model_dump())
 
@@ -582,11 +581,15 @@ def _parse_scores(content: str, valid_ids: set[str]) -> list[dict[str, Any]]:
         by_id[candidate_id] = {
             "id": candidate_id,
             "score": score,
-            "rationale": str(item.get("rationale") or "").strip(),
+            "rationale": _clean_score_rationale(str(item.get("rationale") or "").strip()),
         }
     missing = valid_ids - set(by_id)
-    if missing:
-        raise ValueError(f"Scoring output missing ids: {sorted(missing)}.")
+    for candidate_id in missing:
+        by_id[candidate_id] = {
+            "id": candidate_id,
+            "score": 0,
+            "rationale": "No valid score was returned for this candidate.",
+        }
     return [by_id[candidate_id] for candidate_id in sorted(valid_ids, key=_candidate_order)]
 
 
@@ -687,14 +690,33 @@ def _parse_candidates_from_text(content: str, language: str = "en") -> list[dict
 
 
 def _parse_scores_from_text(content: str, valid_ids: set[str]) -> list[dict[str, Any]]:
-    scores = []
+    scores_by_id: dict[str, dict[str, Any]] = {}
     for candidate_id in sorted(valid_ids, key=_candidate_order):
         match = re.search(rf"{re.escape(candidate_id)}\D*([0-5])", content or "")
         if match:
-            scores.append({"id": candidate_id, "score": int(match.group(1)), "rationale": "Recovered from non-strict model output."})
-    if len(scores) != len(valid_ids):
+            scores_by_id[candidate_id] = {
+                "id": candidate_id,
+                "score": int(match.group(1)),
+                "rationale": "Recovered from non-strict model output.",
+            }
+    if not scores_by_id:
         raise ValueError("Could not recover scores from model output.")
-    return scores
+    for candidate_id in valid_ids - set(scores_by_id):
+        scores_by_id[candidate_id] = {
+            "id": candidate_id,
+            "score": 0,
+            "rationale": "No valid score was returned for this candidate.",
+        }
+    return [scores_by_id[candidate_id] for candidate_id in sorted(valid_ids, key=_candidate_order)]
+
+
+def _clean_score_rationale(rationale: str) -> str:
+    cleaned = re.sub(r"\s+", " ", rationale or "").strip()
+    if not cleaned:
+        return "Score returned without a rationale."
+    if cleaned.startswith(("{", "[")) or '"scores"' in cleaned:
+        return "Score recovered from malformed scoring output."
+    return cleaned
 
 
 def _extract_labeled_value(text: str, labels: list[str]) -> str:
@@ -813,7 +835,7 @@ def _fallback_scores(candidates: list[dict[str, str]], agent_index: int, content
             {
                 "id": candidate["id"],
                 "score": score,
-                "rationale": (content.strip()[:80] or "Fallback score after non-strict model output."),
+                "rationale": "Fallback score after malformed scoring output.",
             }
         )
     return scores
