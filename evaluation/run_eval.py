@@ -50,7 +50,12 @@ def flatten_row(item: dict) -> dict:
         "total_duration_sec": metrics["total_duration_sec"],
         "single_duration_sec": metrics["single_duration_sec"],
         "adversarial_duration_sec": metrics["adversarial_duration_sec"],
-        "token_estimate": metrics["token_estimate"],
+        "single_token_estimate": item["result"].get("single_agent", {}).get("token_estimate", 0),
+        "adversarial_token_estimate": item["result"].get("adversarial", {}).get("token_estimate", 0) + sum(
+            ti.get("metadata", {}).get("token_estimate", 0) or 0
+            for ti in item["result"].get("transcript", [])
+        ),
+        "total_token_estimate": metrics["token_estimate"],
         "single_argument_count": metrics["single_argument_count"],
         "adversarial_argument_count": metrics["adversarial_argument_count"],
         "candidate_count": metrics["candidate_count"],
@@ -85,17 +90,17 @@ def write_outputs(items: list[dict], output_dir: Path) -> None:
     lines = [
         "# Lightweight Evaluation Summary",
         "",
-        "| Topic | Lang | Side | Single sec | Multi sec | Candidates | Eliminated | Optimized | Scorers | Final avg | Latency ratio |",
-        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Topic | Lang | Side | Single sec | Multi sec | Single Token | Multi Token | Candidates | Eliminated | Optimized | Scorers | Final avg |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in rows:
         lines.append(
             f"| {row['topic_id']} | {row['language']} | {row['target_side']} | "
             f"{row['single_duration_sec']} | {row['adversarial_duration_sec']} | "
+            f"{row['single_token_estimate']} | {row['adversarial_token_estimate']} | "
             f"{row['candidate_count']} | {row['eliminated_count']} | "
             f"{row['optimized_count']} | {row['scoring_agent_count']} | "
-            f"{row['final_average_score']} | "
-            f"{row['latency_cost_ratio']} |"
+            f"{row['final_average_score']} |"
         )
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 

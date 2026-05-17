@@ -100,3 +100,4 @@ class EvaluationResult(BaseModel):
     winner: str
     winner_reasoning: str
     total_duration_sec: float
+    token_usage: dict[str, int]

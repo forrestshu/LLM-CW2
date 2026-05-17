@@ -102,14 +102,20 @@ async def generate_stream(request: GenerationRequest):
 async def evaluate(request: EvaluationRequest):
     settings = get_settings()
     judge = JudgeClient(settings.judge_api_key, settings.judge_model, settings.judge_base_url)
-    result = await judge.evaluate(
-        topic=request.topic,
-        target_side=request.target_side,
-        language=request.language,
-        single_content=request.single_content,
-        adversarial_content=request.adversarial_content,
-    )
-    return result
+    try:
+        result = await judge.evaluate(
+            topic=request.topic,
+            target_side=request.target_side,
+            language=request.language,
+            single_content=request.single_content,
+            adversarial_content=request.adversarial_content,
+        )
+        return result
+    except Exception as e:
+        import traceback
+        print(f"[ERROR] Evaluation failed: {e}")
+        traceback.print_exc()
+        raise
 
 
 @app.get("/")

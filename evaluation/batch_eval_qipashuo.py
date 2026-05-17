@@ -62,6 +62,8 @@ def flatten_result(item: dict) -> dict:
     """扁平化评估结果用于CSV"""
     single_scores = item.get("single_scores", {})
     adversarial_scores = item.get("adversarial_scores", {})
+    token_usage = item.get("token_usage", {})
+    metrics = item.get("metrics", {})
 
     return {
         "辩题ID": item["id"],
@@ -76,7 +78,13 @@ def flatten_result(item: dict) -> dict:
         "总分_多Agent": item.get("adversarial_total", ""),
         "胜者": item.get("winner", ""),
         "胜者理由": item.get("winner_reasoning", ""),
-        "评估耗时(秒)": item.get("total_duration_sec", ""),
+        "生成耗时_单Agent(秒)": metrics.get("single_duration_sec", ""),
+        "生成耗时_多Agent(秒)": metrics.get("adversarial_duration_sec", ""),
+        "输入Token": token_usage.get("prompt_tokens", ""),
+        "输出Token": token_usage.get("completion_tokens", ""),
+        "评委总Token": token_usage.get("total_tokens", ""),
+        "单Agent_生成Token": item.get("single_agent_tokens", ""),
+        "多Agent_生成Token": item.get("adversarial_tokens", ""),
     }
 
 
@@ -179,6 +187,37 @@ def write_outputs(results: list[dict], output_dir: Path) -> None:
         diff = a_avg - s_avg
         lines.append(f"| {name} | {s_avg} | {a_avg} | {diff:+.2f} |")
 
+    # Token 和时间统计
+    valid_results = [r for r in results if "error" not in r]
+    if valid_results:
+        total_eval_duration = sum(r.get("total_duration_sec", 0) for r in valid_results)
+        total_eval_tokens = sum(r.get("token_usage", {}).get("total_tokens", 0) for r in valid_results)
+        
+        single_durations = sum(r.get("metrics", {}).get("single_duration_sec", 0) for r in valid_results)
+        adv_durations = sum(r.get("metrics", {}).get("adversarial_duration_sec", 0) for r in valid_results)
+        
+        single_tokens = sum(r.get("single_agent_tokens", 0) for r in valid_results)
+        adv_tokens = sum(r.get("adversarial_tokens", 0) for r in valid_results)
+
+        lines.extend([
+            "",
+            "## 资源消耗 (生成阶段)",
+            f"- 单 Agent 总耗时: {single_durations:.1f} 秒",
+            f"- 单 Agent 平均耗时: {single_durations/len(valid_results):.1f} 秒",
+            f"- 多 Agent 总耗时: {adv_durations:.1f} 秒",
+            f"- 多 Agent 平均耗时: {adv_durations/len(valid_results):.1f} 秒",
+            f"- 单 Agent 总 Token: {single_tokens:,}",
+            f"- 单 Agent 平均 Token: {single_tokens/len(valid_results):.0f}",
+            f"- 多 Agent 总 Token: {adv_tokens:,}",
+            f"- 多 Agent 平均 Token: {adv_tokens/len(valid_results):.0f}",
+            "",
+            "## 资源消耗 (评估阶段)",
+            f"- 总评估时间: {total_eval_duration:.1f} 秒",
+            f"- 平均每题耗时: {total_eval_duration/len(valid_results):.1f} 秒",
+            f"- 总评估 Token: {total_eval_tokens:,}",
+            f"- 平均每题评估 Token: {total_eval_tokens/len(valid_results):.0f}",
+        ])
+
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -188,6 +227,7 @@ async def main() -> None:
     parser.add_argument("--limit", type=int, default=None, help="限制评估数量")
     parser.add_argument("--start", type=int, default=1, help="从第几条开始")
     parser.add_argument("--output", type=str, default=None, help="输出目录")
+    parser.add_argument("--delay", type=int, default=5, help="每条辩题评估后的延迟秒数（避免 429 错误）")
     args = parser.parse_args()
 
     # 解析辩题
@@ -211,37 +251,60 @@ async def main() -> None:
 
     # 批量评估
     results = []
+    max_topic_retries = 3  # 每个辩题最多重试次数
+
     async with httpx.AsyncClient(base_url=args.base_url, timeout=600.0) as client:
         for i, topic in enumerate(topics, start=1):
             print(f"\n[{i}/{len(topics)}] 评估: {topic['topic']}")
 
-            try:
-                # 生成论点
-                gen_result = await run_generation(client, topic["topic"])
+            # 重试当前辩题
+            for retry in range(max_topic_retries):
+                try:
+                    # 生成论点
+                    gen_result = await run_generation(client, topic["topic"])
 
-                # 评估
-                eval_result = await run_evaluation(
-                    client,
-                    topic["topic"],
-                    gen_result["single_agent"]["content"],
-                    gen_result["adversarial"]["content"],
-                )
+                    # 评估
+                    eval_result = await run_evaluation(
+                        client,
+                        topic["topic"],
+                        gen_result["single_agent"]["content"],
+                        gen_result["adversarial"]["content"],
+                    )
 
-                results.append({
-                    "id": topic["id"],
-                    "topic": topic["topic"],
-                    **eval_result,
-                })
+                    results.append({
+                        "id": topic["id"],
+                        "topic": topic["topic"],
+                        "metrics": gen_result.get("metrics", {}),
+                        "single_agent_tokens": gen_result.get("single_agent", {}).get("token_estimate", 0),
+                        "adversarial_tokens": gen_result.get("adversarial", {}).get("token_estimate", 0) + sum(
+                            item.get("metadata", {}).get("token_estimate", 0) or 0
+                            for item in gen_result.get("transcript", [])
+                        ),
+                        **eval_result,
+                    })
 
-                print(f"  单Agent: {eval_result['single_total']}, 多Agent: {eval_result['adversarial_total']}, 胜者: {eval_result['winner']}")
+                    print(f"  单Agent: {eval_result['single_total']}, 多Agent: {eval_result['adversarial_total']}, 胜者: {eval_result['winner']}")
 
-            except Exception as e:
-                print(f"  错误: {e}")
-                results.append({
-                    "id": topic["id"],
-                    "topic": topic["topic"],
-                    "error": str(e),
-                })
+                    # 评估成功后，等待一段时间再评估下一个（避免 429 错误）
+                    if i < len(topics):
+                        print(f"  等待 {args.delay} 秒后继续...")
+                        await asyncio.sleep(args.delay)
+
+                    break  # 成功，跳出重试循环
+
+                except Exception as e:
+                    if retry < max_topic_retries - 1:
+                        wait_time = 2 ** retry
+                        print(f"  错误 (尝试 {retry + 1}/{max_topic_retries}): {e}")
+                        print(f"  {wait_time}秒后重试...")
+                        await asyncio.sleep(wait_time)
+                    else:
+                        print(f"  错误: 已重试 {max_topic_retries} 次后仍失败: {e}")
+                        results.append({
+                            "id": topic["id"],
+                            "topic": topic["topic"],
+                            "error": str(e),
+                        })
 
     # 输出结果
     write_outputs(results, output_dir)

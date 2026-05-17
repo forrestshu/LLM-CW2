@@ -1,3 +1,4 @@
+import asyncio
 import json
 import time
 import re
@@ -12,11 +13,13 @@ class JudgeClient:
         model: str = "deepseek-chat",
         base_url: str = "https://api.deepseek.com",
         timeout: float = 180.0,
+        max_retries: int = 3,
     ):
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout = timeout
+        self.max_retries = max_retries
 
     def _http_client(self) -> httpx.AsyncClient:
         return httpx.AsyncClient(timeout=self.timeout, trust_env=False)
@@ -32,6 +35,25 @@ class JudgeClient:
         if not self.api_key:
             raise RuntimeError("JUDGE_API_KEY is not configured. Add it to .env before evaluating.")
 
+        for attempt in range(self.max_retries):
+            try:
+                return await self._evaluate_once(topic, target_side, language, single_content, adversarial_content)
+            except Exception as e:
+                if attempt < self.max_retries - 1:
+                    wait_time = 2 ** attempt  # 指数退避
+                    print(f"[WARN] 评估失败 (尝试 {attempt + 1}/{self.max_retries}): {e}, {wait_time}秒后重试...")
+                    await asyncio.sleep(wait_time)
+                else:
+                    raise RuntimeError(f"评估失败，已重试 {self.max_retries} 次: {e}") from e
+
+    async def _evaluate_once(
+        self,
+        topic: str,
+        target_side: str,
+        language: str,
+        single_content: str,
+        adversarial_content: str,
+    ) -> dict:
         started = time.perf_counter()
 
         if language == "zh":
@@ -106,7 +128,7 @@ class JudgeClient:
                 {"role": "user", "content": user_prompt},
             ],
             "temperature": 0.3,
-            "max_tokens": 2000,
+            "max_tokens": 2500,
         }
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -125,7 +147,7 @@ class JudgeClient:
         # 调试：打印原始返回
         print(f"[DEBUG] Judge raw response: {json.dumps(data, ensure_ascii=False)[:500]}...")
 
-        # 安全提取 content
+        # 安全提取 content - 出错时抛出异常触发重试
         if not data or not data.get("choices"):
             raise RuntimeError(f"Invalid API response: {data}")
 
@@ -149,6 +171,9 @@ class JudgeClient:
             print(f"[DEBUG] Fallback result: {result}")
 
         duration = time.perf_counter() - started
+
+        # 提取 token 使用情况
+        usage = data.get("usage", {})
 
         # 计算各维度总分
         single_scores = result.get("single_scores", {})
@@ -186,6 +211,11 @@ class JudgeClient:
             "winner": result.get("winner", "tie"),
             "winner_reasoning": result.get("winner_reasoning", ""),
             "total_duration_sec": round(duration, 3),
+            "token_usage": {
+                "prompt_tokens": usage.get("prompt_tokens", 0),
+                "completion_tokens": usage.get("completion_tokens", 0),
+                "total_tokens": usage.get("total_tokens", 0),
+            },
         }
 
     def _parse_fallback(self, content: str, language: str) -> dict:
