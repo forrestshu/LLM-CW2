@@ -75,6 +75,9 @@ export async function evaluateResult(payload) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!response.ok) throw new Error(`Evaluation failed with HTTP ${response.status}`);
+  if (!response.ok) {
+    const detail = await readErrorDetail(response);
+    throw new Error(detail || `Evaluation failed with HTTP ${response.status}`);
+  }
   return response.json();
 }

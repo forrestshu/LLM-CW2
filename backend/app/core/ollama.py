@@ -24,7 +24,7 @@ class OllamaClient:
 
     async def health(self) -> dict[str, object]:
         try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
+            async with httpx.AsyncClient(timeout=5.0, trust_env=False) as client:
                 response = await client.get(f"{self.base_url}/api/tags")
                 response.raise_for_status()
                 data = response.json()
@@ -53,7 +53,7 @@ class OllamaClient:
             },
         }
         async with self._lock:
-            async with httpx.AsyncClient(timeout=self.timeout) as client:
+            async with httpx.AsyncClient(timeout=self.timeout, trust_env=False) as client:
                 response = await client.post(f"{self.base_url}/api/chat", json=payload)
                 response.raise_for_status()
                 data = response.json()

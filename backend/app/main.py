@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import AsyncIterator
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
@@ -101,7 +101,8 @@ async def generate_stream(request: GenerationRequest):
 @app.post("/api/evaluate")
 async def evaluate(request: EvaluationRequest):
     settings = get_settings()
-    judge = JudgeClient(settings.judge_api_key, settings.judge_model, settings.judge_base_url)
+    judge_api_key = settings.judge_api_key or settings.deepseek_api_key
+    judge = JudgeClient(judge_api_key, settings.judge_model, settings.judge_base_url)
     try:
         result = await judge.evaluate(
             topic=request.topic,
@@ -115,7 +116,7 @@ async def evaluate(request: EvaluationRequest):
         import traceback
         print(f"[ERROR] Evaluation failed: {e}")
         traceback.print_exc()
-        raise
+        raise HTTPException(status_code=502, detail=str(e)) from e
 
 
 @app.get("/")
